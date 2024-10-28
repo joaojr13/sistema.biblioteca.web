@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Livros</title>
+</head>
+    <div layout:fragment="body" class="row gx-5">
+        <div th:each="livro : ${livros}" class="col-lg-4 mb-5">
+            <div class="card h-100 shadow border-0">
+                <img class="card-img-top img-thumbnail" th:src="${livro.imageUrl}" alt="...">
+                <div class="card-body p-4">
+                    <div  th:text="${livro.tipo}" class="badge bg-primary bg-gradient rounded-pill mb-2"></div>
+                    <a class="text-decoration-none link-dark stretched-link" href="#!"><div th:text="${livro.titulo}" class="h5 card-title mb-3"></div></a>
+                    <p th:text="${livro.descricao}" class="card-text mb-0"></p>
+                </div>
+                <div class="card-footer p-4 pt-0 bg-transparent border-top-0">
+                    <div class="d-flex align-items-end justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <div class="small">
+                                <div th:text="${livro.autor}" class="fw-bold"></div>
+                                <div th:text="${livro.createdOn}" class="text-muted"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
