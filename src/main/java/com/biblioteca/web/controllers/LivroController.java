@@ -22,21 +22,21 @@ public class LivroController {
     }
 
     @GetMapping("/livros")
-    public String listLivros(Model model){
+    public String listLivros(Model model) {
         List<LivroDto> livros = livroService.findAllLivros();
         model.addAttribute("livros", livros);
         return "livros-list";
     }
 
     @GetMapping("/livros/new")
-    public String createLivroForm(Model model){
+    public String createLivroForm(Model model) {
         Livro livro = new Livro();
         model.addAttribute("livro", livro);
         return "livros-create";
     }
 
     @PostMapping("/livros/new")
-    public String saveLivro(@ModelAttribute("livro") Livro livro, Model model){
+    public String saveLivro(@ModelAttribute("livro") Livro livro, Model model) {
         livroService.salvarLivro(livro);
         return "redirect:/livros";
     }
