@@ -11,15 +11,78 @@
 <main class="flex-shrink-0">
 <section layout:fragment="body" class="py-5">
     <div class="container">
-    <form>
+    <form role="form" method="post" th:action="@{/livros/new}" th:object="${livro}" >
         <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">Email address</label>
-            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+            <label for="titulo" class="form-label">Titulo</label>
+            <input
+                    type="text"
+                    class="form-control"
+                    id="titulo"
+                    th:field="*{titulo}"
+                    placeholder="Título do livro"
+            >
+
         </div>
         <div class="mb-3">
-            <label for="exampleInputPassword1" class="form-label">Password</label>
-            <input type="password" class="form-control" id="exampleInputPassword1">
+            <label for="autor" class="form-label">Autor</label>
+            <input
+                    type="text"
+                    class="form-control"
+                    id="autor"
+                    th:field="*{autor}"
+                    placeholder="Autor do livro"
+            >
+        </div>
+        <div class="mb-3">
+            <label for="editora" class="form-label">Editora</label>
+            <input
+                    type="text"
+                    class="form-control"
+                    id="editora"
+                    th:field="*{editora}"
+                    placeholder="Editora do livro"
+            >
+        </div>
+        <div class="mb-3">
+            <label for="imageUrl" class="form-label">Capa URL</label>
+            <input
+                    type="url"
+                    class="form-control"
+                    id="imageUrl"
+                    th:field="*{imageUrl}"
+                    placeholder="URL da capa do livro"
+            >
+        </div>
+        <div class="form-group">
+            <label for="tipoLivro">Tipo do Livro</label>
+            <select
+                    class="form-control"
+                    id="tipoLivro"
+                    th:field="*{tipo}"
+            >
+                <option value="FISICO">Físico</option>
+                <option VALUE="DIGITAL">Digital</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="descricao">Descrição</label>
+            <textarea
+                    class="form-control"
+                    id="descricao"
+                    th:field="*{descricao}"
+                    placeholder="Descrição do livro"
+                    rows="3"
+            ></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="qtdExamplares" class="form-label">Quantidade de Exemplares</label>
+            <input
+                    type="number"
+                    class="form-control"
+                    id="qtdExamplares"
+                    th:field="*{qtdExamplares}"
+                    placeholder="Quantidade de Exemplares"
+            >
         </div>
         <button type="submit" class="btn btn-primary">Criar</button>
     </form>

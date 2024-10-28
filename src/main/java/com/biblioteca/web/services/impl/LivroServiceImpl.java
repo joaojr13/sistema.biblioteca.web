@@ -25,6 +25,11 @@ public class LivroServiceImpl implements LivroService {
         return livros.stream().map(this::mapToLivroDto).collect(Collectors.toList());
     }
 
+    @Override
+    public void salvarLivro(Livro livro) {
+        livroRepository.save(livro);
+    }
+
     private LivroDto mapToLivroDto(Livro livro) {
         return LivroDto.builder()
                 .id(livro.getId())

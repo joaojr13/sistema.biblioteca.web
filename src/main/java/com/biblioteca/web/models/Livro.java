@@ -24,6 +24,7 @@ public class Livro {
     private String autor;
     private String editora;
     private String isbn;
+    @Column(length = 2000)
     private String descricao;
     private String imageUrl;
     private String tipo;
