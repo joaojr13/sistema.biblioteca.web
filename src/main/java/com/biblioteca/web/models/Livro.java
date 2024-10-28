@@ -28,7 +28,7 @@ public class Livro {
     private String descricao;
     private String imageUrl;
     private String tipo;
-    private int qtdExamplares;
+    private int qtdExemplares;
     @CreationTimestamp
     private LocalDateTime createdOn;
     @UpdateTimestamp

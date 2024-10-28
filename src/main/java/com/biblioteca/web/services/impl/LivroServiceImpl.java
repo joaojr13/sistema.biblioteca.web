@@ -26,8 +26,35 @@ public class LivroServiceImpl implements LivroService {
     }
 
     @Override
-    public void salvarLivro(Livro livro) {
+    public void salvarLivro(LivroDto livroDto) {
+        Livro livro = mapToLivro(livroDto);
         livroRepository.save(livro);
+    }
+
+    @Override
+    public LivroDto findClubById(Long livroId) {
+        Livro livro = livroRepository.findById(livroId).get();
+        return mapToLivroDto(livro);
+    }
+
+    @Override
+    public void updateLivro(LivroDto livroDto) {
+        Livro livro = mapToLivro(livroDto);
+        livroRepository.save(livro);
+    }
+
+    private Livro mapToLivro(LivroDto livro) {
+        return Livro.builder()
+                .id(livro.getId())
+                .titulo(livro.getTitulo())
+                .autor(livro.getAutor())
+                .isbn(livro.getIsbn())
+                .editora(livro.getEditora())
+                .qtdExemplares(livro.getQtdExemplares())
+                .imageUrl(livro.getImageUrl())
+                .tipo(livro.getTipo())
+                .descricao(livro.getDescricao())
+                .build();
     }
 
     private LivroDto mapToLivroDto(Livro livro) {
@@ -37,7 +64,7 @@ public class LivroServiceImpl implements LivroService {
                 .autor(livro.getAutor())
                 .isbn(livro.getIsbn())
                 .editora(livro.getEditora())
-                .qtdExamplares(livro.getQtdExamplares())
+                .qtdExemplares(livro.getQtdExemplares())
                 .imageUrl(livro.getImageUrl())
                 .tipo(livro.getTipo())
                 .descricao(livro.getDescricao())
