@@ -7,117 +7,94 @@
 >
 <head>
     <meta charset="UTF-8">
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <title>Livros</title>
-
-    <style>
-        body{
-            background: #edf1f5;
-            margin-top:20px;
-        }
-        .card {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-            word-wrap: break-word;
-            background-color: #fff;
-            background-clip: border-box;
-            border: 0 solid transparent;
-            border-radius: 0;
-        }
-        .btn-circle.btn-lg, .btn-group-lg>.btn-circle.btn {
-            width: 50px;
-            height: 50px;
-            padding: 14px 15px;
-            font-size: 18px;
-            line-height: 23px;
-        }
-        .text-muted {
-            color: #8898aa!important;
-        }
-        [type=button]:not(:disabled), [type=reset]:not(:disabled), [type=submit]:not(:disabled), button:not(:disabled) {
-            cursor: pointer;
-        }
-        .btn-circle {
-            border-radius: 100%;
-            width: 40px;
-            height: 40px;
-            padding: 10px;
-        }
-        .user-table tbody tr .category-select {
-            max-width: 150px;
-            border-radius: 20px;
-        }
-
-    </style>
 </head>
 <main layout:fragment="body">
-    <div class="container">
+    <div class="container-fluid mx-auto">
         <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title text-uppercase mb-0">Manage Users</h5>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table no-wrap user-table mb-0">
-                            <thead>
-                            <tr>
-                                <th scope="col" class="border-0 text-uppercase font-medium pl-4">#</th>
-                                <th scope="col" class="border-0 text-uppercase font-medium">Username</th>
-                                <th scope="col" class="border-0 text-uppercase font-medium">Nome</th>
-                                <th scope="col" class="border-0 text-uppercase font-medium">Cpf</th>
-                                <th scope="col" class="border-0 text-uppercase font-medium">Email/Telefone</th>
-                                <th scope="col" class="border-0 text-uppercase font-medium">Data Criação</th>
-                                <th scope="col" class="border-0 text-uppercase font-medium">Data Ult. Modificação</th>
-                                <th scope="col" class="border-0 text-uppercase font-medium">Category</th>
-                                <th scope="col" class="border-0 text-uppercase font-medium">Manage</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="usuario : ${usuarios}">
-                                <td class="pl-4" th:text="${usuario.id}">1</td>
-                                <td>
-                                    <h5 class="font-medium mb-0" th:text="${usuario.username}">Username</h5>
-                                </td>
-                                <td>
-                                    <h5 class="text-muted" th:text="${usuario.nomeCompleto}">Nome do Usuario</h5>
-                                </td>
-                                <td>
-                                    <span class="text-muted" th:text="${usuario.cpf}">Cpf</span><br>
-                                </td>
-                                <td>
-                                    <span class="text-muted" th:text="${usuario.email}">Email</span><br>
-                                    <span class="text-muted" th:text="${usuario.telefone}">Telefone</span>
-                                </td>
-                                <td>
-                                    <span class="text-muted" th:text="${#temporals.format(usuario.createdOn, 'dd MMM yyyy')}">Data</span><br>
-                                    <span class="text-muted" th:text="${#temporals.format(usuario.createdOn, 'HH:mm')}">Hora</span>
-                                </td>
-                                <td>
-                                    <span class="text-muted" th:text="${#temporals.format(usuario.updatedOn, 'dd MMM yyyy')}">Data</span><br>
-                                    <span class="text-muted" th:text="${#temporals.format(usuario.updatedOn, 'HH:mm')}">Hora</span>
-                                </td>
-                                <td>
-                                    <select class="form-control category-select">
-                                        <option th:each="categoria : ${usuario.roles.reversed()}"
-                                                th:value="${categoria}" th:text="${categoria.name}">Categoria</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle"><i class="fa fa-key"></i></button>
-                                    <a th:href="@{/clientes/{clienteId}/edit(clienteId=${usuario.id})}" type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle ml-2"><i class="fa fa-edit"></i></a>
-                                    <a th:href="@{/clientes/{clienteId}/delete(clienteId=${usuario.id})}" type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle ml-2"><i class="fa fa-trash"></i></a>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+            <div class="col text-center my-3">
+                <h1 class="fw-bolder">Gestão de Usuários</h1>
             </div>
         </div>
-    </div>
 
+        <div class="row justify-content-center mb-3">
+            <div class="col-md-8">
+                <form th:action="@{/usuarios}" method="get" class="d-flex justify-content-center">
+                    <input type="text" name="search" class="form-control me-2" placeholder="Pesquisar por nome ou e-mail" th:value="${search}">
+                    <select name="status" class="form-select me-2">
+                        <option value="">Todos</option>
+                        <option value="ativo" th:selected="${status == 'ativo'}">Ativos</option>
+                        <option value="inativo" th:selected="${status == 'inativo'}">Inativos</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary">Filtrar</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Nome Completo</th>
+                    <th scope="col">E-mail</th>
+                    <th scope="col">CPF</th>
+                    <th scope="col">Ativo</th>
+                    <th scope="col">Data Criação</th>
+                    <th scope="col">Última Modificação</th>
+                    <th scope="col">Permissões</th>
+                    <th scope="col">Ações</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="usuario : ${usuarios}">
+                    <td th:text="${usuario.id}">Id</td>
+                    <td th:text="${usuario.username}">Username</td>
+                    <td th:text="${usuario.nomeCompleto}">Nome Completo</td>
+                    <td th:text="${usuario.email}">E-mail</td>
+                    <td th:text="${usuario.cpf}">Cpf</td>
+
+                    <td class="p-6">
+                        <span th:classappend="${usuario.ativo} ? 'badge bg-success-light text-success text-uppercase' : 'badge bg-danger-light text-danger text-uppercase'"
+                              th:text="${usuario.ativo ? 'Ativo' : 'Inativo'}">
+                        </span>
+                    </td>
+
+                    <td th:text="${#temporals.format(usuario.createdOn, 'dd MMM yyyy HH:mm:ss')}">Created On</td>
+                    <td th:text="${#temporals.format(usuario.updatedOn, 'dd MMM yyyy HH:mm:ss')}">Updated On</td>
+                    <td class="p-6">
+                        <span th:each="role, iterStat : ${usuario.roles}">
+                            <a class="mb-2 mb-md-0 text-decoration-none badge me-2 bg-transparent border text-dark fw-bold"
+                               th:text="${role.name}"
+                               th:if="${iterStat.index < 3}">
+                            </a>
+                        </span>
+                    <td>
+                        <div class="btn-group">
+                            <a type="button"
+                               class="btn btn-outline-secondary align-items-center"
+                               th:href="@{/clientes/{clienteId}/edit(clienteId=${usuario.id})}"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                     class="bi bi-person-fill-gear" viewBox="0 0 16 16">
+                                    <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0m-9 8c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4m9.886-3.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382zM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0"/>
+                                </svg>
+                            </a>
+                            <a type="button" class="btn btn-outline-secondary">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                     class="bi bi-person-x-fill" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                          d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m6.146-2.854a.5.5 0 0 1 .708 0L14 6.293l1.146-1.147a.5.5 0 0 1 .708.708L14.707 7l1.147 1.146a.5.5 0 0 1-.708.708L14 7.707l-1.146 1.147a.5.5 0 0 1-.708-.708L13.293 7l-1.147-1.146a.5.5 0 0 1 0-.708"></path>
+                                </svg>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </main>
 </html>

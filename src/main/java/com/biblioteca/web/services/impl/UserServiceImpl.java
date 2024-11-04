@@ -34,6 +34,7 @@ public class UserServiceImpl implements UserService {
         userEntity.setUsername(registrationDto.getUsername());
         userEntity.setEmail(registrationDto.getEmail());
         userEntity.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
+        userEntity.setAtivo(true);
 
         Role role = roleRepository.findByName("CLIENTE");
         userEntity.setRoles(Collections.singletonList(role));
@@ -52,7 +53,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserEntity> findAll() {
-        return userRepository.findAllByAtivoTrue();
+        return userRepository.findAll();
     }
 
     @Override
