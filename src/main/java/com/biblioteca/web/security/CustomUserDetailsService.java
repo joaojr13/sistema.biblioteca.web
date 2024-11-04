@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Autowired
     public CustomUserDetailsService(UserRepository userRepository) {
@@ -28,13 +28,11 @@ public class CustomUserDetailsService implements UserDetailsService {
             return new User(
                     user.getEmail(),
                     user.getPassword(),
-                    user.getRoles().stream().map((role) -> new SimpleGrantedAuthority(role.getName()))
+                    user.getRoles().stream().map((role) -> new SimpleGrantedAuthority("ROLE_" + role.getName()))
                             .collect(Collectors.toList())
             );
         } else {
             throw new UsernameNotFoundException("Invalid username or password");
         }
     }
-
-    ;
 }

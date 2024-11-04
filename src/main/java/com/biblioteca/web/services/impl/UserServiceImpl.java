@@ -1,17 +1,19 @@
 package com.biblioteca.web.services.impl;
 
 import com.biblioteca.web.dtos.RegistrationDto;
+import com.biblioteca.web.dtos.UsuarioDto;
 import com.biblioteca.web.models.Role;
 import com.biblioteca.web.models.UserEntity;
 import com.biblioteca.web.repository.RoleRepository;
 import com.biblioteca.web.repository.UserRepository;
 import com.biblioteca.web.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -46,5 +48,26 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserEntity findByName(String username) {
         return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public List<UserEntity> findAll() {
+        return userRepository.findAllByAtivoTrue();
+    }
+
+    @Override
+    public UserEntity findById(Long id) {
+        UserEntity usuario = userRepository.findById(id).get();
+        return usuario;
+    }
+
+    @Override
+    public void updateUser(UserEntity userEntity) {
+        userRepository.save(userEntity);
+    }
+
+    @Override
+    public void deleteById(Long clienteId) {
+        userRepository.deleteById(clienteId);
     }
 }

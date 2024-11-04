@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 public class LivroServiceImpl implements LivroService {
     private LivroRepository livroRepository;
 
-    @Autowired
     public LivroServiceImpl(LivroRepository livroRepository) {
         this.livroRepository = livroRepository;
     }
@@ -32,7 +31,7 @@ public class LivroServiceImpl implements LivroService {
     }
 
     @Override
-    public LivroDto findClubById(Long livroId) {
+    public LivroDto findLivroById(Long livroId) {
         Livro livro = livroRepository.findById(livroId).get();
         return mapToLivroDto(livro);
     }
@@ -41,6 +40,12 @@ public class LivroServiceImpl implements LivroService {
     public void updateLivro(LivroDto livroDto) {
         Livro livro = mapToLivro(livroDto);
         livroRepository.save(livro);
+    }
+
+    @Override
+    public List<LivroDto> searchLivros(String query) {
+        List<Livro> livros = livroRepository.searchLivros(query);
+        return livros.stream().map(this::mapToLivroDto).collect(Collectors.toList());
     }
 
     private Livro mapToLivro(LivroDto livro) {

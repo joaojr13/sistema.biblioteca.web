@@ -9,7 +9,9 @@ public interface LivroService {
 
     void salvarLivro(LivroDto livro);
 
-    LivroDto findClubById(Long livroId);
+    LivroDto findLivroById(Long livroId);
 
     void updateLivro(LivroDto livro);
+
+    List<LivroDto> searchLivros(String query);
 }

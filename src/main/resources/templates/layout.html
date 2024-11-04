@@ -2,8 +2,8 @@
 <html
         xmlns:th="http://www.thymeleaf.org"
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        xmlns:sec="http://www.thymeleaf.org"
->
+        xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+        lang="en-Us">
 <head th:fragment="header">
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -17,19 +17,23 @@
 </head>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container px-5">
-        <a class="navbar-brand" th:href="@{/}">RunGroop</a>
+        <a class="navbar-brand" th:href="@{/livros}">Sistema Biblioteca</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                <li class="nav-item"><a class="nav-link" th:href="@{/}">Home</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/clubs}">Find Clubs</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/events}">Find Events</a></li>
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-1">
+                <li class="nav-item"><a class="nav-link" th:href="@{/livros}">Home</a></li>
+                <li sec:authorize="hasAnyRole('CLIENTE', 'FUNCIONARIO', 'ADMIN')" class="nav-item"><a class="nav-link" th:href="@{/reservas}">Reservas</a></li>
+                <li sec:authorize="hasAnyRole('FUNCIONARIO', 'ADMIN')" class="nav-item"><a class="nav-link" th:href="@{/emprestimos}">Emprestimos</a></li>
+                <li sec:authorize="hasAnyRole('FUNCIONARIO', 'ADMIN')" class="nav-item"><a class="nav-link" th:href="@{/clientes}">Clientes</a></li>
+
                 <li sec:authorize="!isAuthenticated()"  class="nav-item"><a class="nav-link me-3 btn btn-primary" th:href="@{/login}">Login</a></li>
                 <li sec:authorize="!isAuthenticated()"  class="nav-item"><a class="nav-link btn btn-primary" th:href="@{/register}">Register</a></li>
+
                 <li sec:authorize="isAuthenticated()" class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="navbarDropdownPortfolio" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Welcome</a>
+                    <a class="nav-link dropdown-toggle" id="navbarDropdownPortfolio" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" th:text="'Welcome '+ ${#authentication.name}"></a>
                     <ul  class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownPortfolio">
-                        <li><a class="dropdown-item" th:href="@{/clubs/new}">Create Running Club</a></li>
+                        <li sec:authorize="hasAnyRole('FUNCIONARIO','ADMIN')"><a class="dropdown-item" th:href="@{/livros/new}">Adicionar um livro</a></li>
+                        <li sec:authorize="hasAnyRole('FUNCIONARIO','ADMIN')"><a class="dropdown-item" th:href="@{/register}">Cadastrar um novo usuario</a></li>
                         <li><a class="dropdown-item" th:href="@{/logout}">Logout</a></li>
                     </ul>
                 </li>
@@ -38,13 +42,6 @@
     </div>
 </nav>
 <body layout:fragment="body"></body>
-<section class="py-5 bg-light">
-    <div class="container px-5 my-5">
-        <h2 class="display-4 fw-bolder mb-4">Let's build run together</h2>
-        <a class="btn btn-lg btn-primary" href="#!">Contact us</a>
-    </div>
-</section>
-</main>
 <!-- Footer-->
 <footer class="bg-dark py-4 mt-auto">
     <div class="container px-5">
@@ -60,8 +57,6 @@
         </div>
     </div>
 </footer>
-<!-- Bootstrap core JS-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-<!-- Core theme JS-->
 <script src="js/scripts.js"></script>
 </html>

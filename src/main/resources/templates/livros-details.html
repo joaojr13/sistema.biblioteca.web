@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Livros</title>
+
+    <style>
+        /* CSS para truncar texto em múltiplas linhas com reticências */
+        .text-multiline-truncate {
+            display: -webkit-box;
+            -webkit-line-clamp: 4; /* Define o número máximo de linhas */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-height: 6em; /* Ajuste conforme a altura desejada */
+        }
+    </style>
+
+</head>
+<body class="d-flex flex-column h-100">
+<main class="flex-shrink-0">
+    <section layout:fragment="body" class="py-5">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="row gx-4 gx-lg-5 align-items-center">
+                <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0 img-thumbnail" style="max-height: 700px; max-width: 600px; object-fit: fill" th:src="${livro.imageUrl}" alt="..." /></div>
+                <div class="col-md-6">
+                    <div class="small mb-1" th:text="'ISBN: ' + ${livro.isbn}"></div>
+                    <h1 class="display-5 fw-bolder" th:text="${livro.titulo}"></h1>
+                    <div class="fs-5 mb-5">
+                        <span class="text-decoration-line-through">$45.00</span>
+                        <span>$40.00</span>
+                    </div>
+                    <div class="overflow-auto mb-5" style="max-height: 250px">
+                        <p class="lead" style="text-align: justify" th:text="${livro.descricao}"></p>
+                    </div>
+                    <div class="d-flex">
+                        <input class="form-control text-center me-3" id="inputQuantity" type="num" value="1" style="max-width: 3rem" />
+                        <button class="btn btn-outline-dark flex-shrink-0" type="button">
+                            <i class="bi-cart-fill me-1"></i>
+                            Add to cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

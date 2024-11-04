@@ -2,7 +2,9 @@
 <html lang="en"
       layout:decorate="~{layout}"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
 <head>
     <meta charset="UTF-8">
     <title>Livros</title>
@@ -23,11 +25,11 @@
 <body class="d-flex flex-column h-100">
 <main class="flex-shrink-0">
     <section layout:fragment="body" class="py-5">
-        <div class="container-fluid px-5 my-5" style="width: 80%">
+        <div class="container-fluid px-5 my-5" style="width: 100%">
             <div class="container d-flex flex-column align-items-center justify-content-center text-center mb-5">
                 <h1 class="fw-bolder">Procure seus Livros Preferidos!</h1>
                 <p class="lead fw-normal text-muted mb-2"></p>
-                <form th:action="@{/clubs/search}" class="d-inline-flex w-75 my-lg-0 mb-3">
+                <form th:action="@{/livros/search}" class="d-inline-flex w-75 my-lg-0 mb-3">
                     <input name="query" class="form-control w-100" type="search"
                            placeholder="Procurar por nome do livro" aria-label="Search">
                 </form>
@@ -41,7 +43,7 @@
                              th:src="${livro.imageUrl}">
                         <div class="card-body p-4">
                             <div class="badge bg-primary bg-gradient rounded-pill mb-2" th:text="${livro.tipo}"></div>
-                            <a class="text-decoration-none link-dark stretched-link" style="pointer-events: none">
+                            <a class="text-decoration-none link-dark" th:href="@{/livros/{livroId}/details(livroId=${livro.id})}">
                                 <div class="h5 card-title mb-3" th:text="${livro.titulo}"></div>
                             </a>
                             <p class="card-text text-lg-start mb text-multiline-truncate"
@@ -55,7 +57,7 @@
                                         <div class="text-muted" th:text="${livro.createdOn}"></div>
                                     </div>
                                 </div>
-                                <a class="btn btn-primary" th:href="@{/livros/{livroId}/edit(livroId=${livro.id})}">Editar</a>
+                                <a class="btn btn-primary" sec:authorize="hasAnyRole('FUNCIONARIO', 'ADMIN')" th:href="@{/livros/{livroId}/edit(livroId=${livro.id})}">Editar</a>
                             </div>
                         </div>
                     </div>

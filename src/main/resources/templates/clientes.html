@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+<head>
+    <meta charset="UTF-8">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <title>Livros</title>
+
+    <style>
+        body{
+            background: #edf1f5;
+            margin-top:20px;
+        }
+        .card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            word-wrap: break-word;
+            background-color: #fff;
+            background-clip: border-box;
+            border: 0 solid transparent;
+            border-radius: 0;
+        }
+        .btn-circle.btn-lg, .btn-group-lg>.btn-circle.btn {
+            width: 50px;
+            height: 50px;
+            padding: 14px 15px;
+            font-size: 18px;
+            line-height: 23px;
+        }
+        .text-muted {
+            color: #8898aa!important;
+        }
+        [type=button]:not(:disabled), [type=reset]:not(:disabled), [type=submit]:not(:disabled), button:not(:disabled) {
+            cursor: pointer;
+        }
+        .btn-circle {
+            border-radius: 100%;
+            width: 40px;
+            height: 40px;
+            padding: 10px;
+        }
+        .user-table tbody tr .category-select {
+            max-width: 150px;
+            border-radius: 20px;
+        }
+
+    </style>
+</head>
+<main layout:fragment="body">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title text-uppercase mb-0">Manage Users</h5>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table no-wrap user-table mb-0">
+                            <thead>
+                            <tr>
+                                <th scope="col" class="border-0 text-uppercase font-medium pl-4">#</th>
+                                <th scope="col" class="border-0 text-uppercase font-medium">Username</th>
+                                <th scope="col" class="border-0 text-uppercase font-medium">Nome</th>
+                                <th scope="col" class="border-0 text-uppercase font-medium">Cpf</th>
+                                <th scope="col" class="border-0 text-uppercase font-medium">Email/Telefone</th>
+                                <th scope="col" class="border-0 text-uppercase font-medium">Data Criação</th>
+                                <th scope="col" class="border-0 text-uppercase font-medium">Data Ult. Modificação</th>
+                                <th scope="col" class="border-0 text-uppercase font-medium">Category</th>
+                                <th scope="col" class="border-0 text-uppercase font-medium">Manage</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="usuario : ${usuarios}">
+                                <td class="pl-4" th:text="${usuario.id}">1</td>
+                                <td>
+                                    <h5 class="font-medium mb-0" th:text="${usuario.username}">Username</h5>
+                                </td>
+                                <td>
+                                    <h5 class="text-muted" th:text="${usuario.nomeCompleto}">Nome do Usuario</h5>
+                                </td>
+                                <td>
+                                    <span class="text-muted" th:text="${usuario.cpf}">Cpf</span><br>
+                                </td>
+                                <td>
+                                    <span class="text-muted" th:text="${usuario.email}">Email</span><br>
+                                    <span class="text-muted" th:text="${usuario.telefone}">Telefone</span>
+                                </td>
+                                <td>
+                                    <span class="text-muted" th:text="${#temporals.format(usuario.createdOn, 'dd MMM yyyy')}">Data</span><br>
+                                    <span class="text-muted" th:text="${#temporals.format(usuario.createdOn, 'HH:mm')}">Hora</span>
+                                </td>
+                                <td>
+                                    <span class="text-muted" th:text="${#temporals.format(usuario.updatedOn, 'dd MMM yyyy')}">Data</span><br>
+                                    <span class="text-muted" th:text="${#temporals.format(usuario.updatedOn, 'HH:mm')}">Hora</span>
+                                </td>
+                                <td>
+                                    <select class="form-control category-select">
+                                        <option th:each="categoria : ${usuario.roles.reversed()}"
+                                                th:value="${categoria}" th:text="${categoria.name}">Categoria</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle"><i class="fa fa-key"></i></button>
+                                    <a th:href="@{/clientes/{clienteId}/edit(clienteId=${usuario.id})}" type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle ml-2"><i class="fa fa-edit"></i></a>
+                                    <a th:href="@{/clientes/{clienteId}/delete(clienteId=${usuario.id})}" type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle ml-2"><i class="fa fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+</html>

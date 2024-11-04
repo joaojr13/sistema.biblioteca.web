@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,7 +25,7 @@ public class LivroController {
     public String listLivros(Model model) {
         List<LivroDto> livros = livroService.findAllLivros();
         model.addAttribute("livros", livros);
-        return "livros-list";
+        return "livros";
     }
 
     @GetMapping("/livros/new")
@@ -52,7 +49,7 @@ public class LivroController {
 
     @GetMapping("/livros/{livroId}/edit")
     public String editLivroForm(@PathVariable Long livroId, Model model) {
-        LivroDto livro = livroService.findClubById(livroId);
+        LivroDto livro = livroService.findLivroById(livroId);
         model.addAttribute("livro", livro);
         return "livros-edit";
     }
@@ -74,5 +71,17 @@ public class LivroController {
         return "redirect:/livros";
     }
 
+    @GetMapping("/livros/{livroId}/details")
+    public String detailsLivro(@PathVariable Long livroId, Model model) {
+        LivroDto livroDto = livroService.findLivroById(livroId);
+        model.addAttribute("livro", livroDto);
+        return "livros-details";
+    }
 
+    @GetMapping("/livros/search")
+    public String searchLivros(@RequestParam(value = "query") String query, Model model) {
+        List<LivroDto> livrosDto = livroService.searchLivros(query);
+        model.addAttribute("livros", livrosDto);
+        return "livros";
+    }
 }
