@@ -1,16 +1,12 @@
 package com.biblioteca.web.services;
 
-import com.biblioteca.web.dtos.RegistrationDto;
-import com.biblioteca.web.dtos.UsuarioDto;
 import com.biblioteca.web.models.UserEntity;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserService {
-    void saveUser(RegistrationDto registrationDto);
+    void saveUser(UserEntity registrationDto);
 
     UserEntity findByEmail(@NotEmpty String email);
 

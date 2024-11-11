@@ -31,14 +31,13 @@ public class LivroServiceImpl implements LivroService {
     }
 
     @Override
-    public LivroDto findLivroById(Long livroId) {
+    public Livro findLivroById(Long livroId) {
         Livro livro = livroRepository.findById(livroId).get();
-        return mapToLivroDto(livro);
+        return livro;
     }
 
     @Override
-    public void updateLivro(LivroDto livroDto) {
-        Livro livro = mapToLivro(livroDto);
+    public void updateLivro(Livro livro) {
         livroRepository.save(livro);
     }
 
@@ -52,7 +51,7 @@ public class LivroServiceImpl implements LivroService {
         return Livro.builder()
                 .id(livro.getId())
                 .titulo(livro.getTitulo())
-                .autor(livro.getAutor())
+                .autores(livro.getAutores())
                 .isbn(livro.getIsbn())
                 .editora(livro.getEditora())
                 .qtdExemplares(livro.getQtdExemplares())
@@ -66,7 +65,7 @@ public class LivroServiceImpl implements LivroService {
         return LivroDto.builder()
                 .id(livro.getId())
                 .titulo(livro.getTitulo())
-                .autor(livro.getAutor())
+                .autores(livro.getAutores())
                 .isbn(livro.getIsbn())
                 .editora(livro.getEditora())
                 .qtdExemplares(livro.getQtdExemplares())

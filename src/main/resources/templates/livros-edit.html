@@ -1,100 +1,128 @@
 <!DOCTYPE html>
-<html lang="en"
-      layout:decorate="~{layout}"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org">
+<html lang="en" layout:decorate="~{layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Livros - Editar</title>
+  <title>Editar Livro</title>
+  <!-- Bootstrap CSS e Ícones -->
+  <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+  <link th:href="@{/css/bootstrap-icons.css}" rel="stylesheet">
+  <style>
+    .form-container {
+      max-width: 800px;
+      margin: auto;
+    }
+    .btn-remove {
+      margin-left: 10px;
+    }
+  </style>
+  <script>
+    function adicionarAutor() {
+      const autorInput = document.getElementById("autorInput");
+      const autoresList = document.getElementById("autoresList");
+
+      const autor = autorInput.value.trim();
+      if (autor) {
+        const listItem = document.createElement("div");
+        listItem.classList.add("input-group", "mb-2");
+
+        const inputField = document.createElement("input");
+        inputField.type = "text";
+        inputField.classList.add("form-control");
+        inputField.name = "autores";
+        inputField.value = autor;
+
+        const removeButton = document.createElement("button");
+        removeButton.classList.add("btn", "btn-outline-danger");
+        removeButton.innerHTML = '<i class="bi bi-dash-circle"></i>';
+        removeButton.onclick = function () {
+          listItem.remove();
+        };
+
+        listItem.appendChild(inputField);
+        listItem.appendChild(removeButton);
+        autoresList.appendChild(listItem);
+
+        autorInput.value = "";
+      }
+    }
+  </script>
 </head>
 <body>
-<main class="flex-shrink-0">
-  <section class="py-5" layout:fragment="body">
-    <div class="container">
-      <form method="post" role="form" th:action="@{/livros/{livroId}/edit(livroId=${livro.id})}" th:object="${livro}">
+<main layout:fragment="body">
+  <section class="py-5">
+    <div class="container form-container bg-white shadow-sm rounded p-4">
+      <h2 class="text-center mb-4">Editar Livro</h2>
+      <form method="post" th:action="@{/livros/{livroId}/edit(livroId=${livro.id})}" th:object="${livro}">
         <input type="hidden" th:field="*{id}">
-        <div class="mb-3">
-          <label class="form-label" for="titulo">Titulo</label>
-          <input
-                  class="form-control"
-                  id="titulo"
-                  placeholder="Título do livro"
-                  th:field="*{titulo}"
-                  type="text"
-          >
-          <p th:if="${#fields.hasErrors('titulo')}" class="text-danger"  th:errors="*{titulo}"></p>
 
-        </div>
+        <!-- Título -->
         <div class="mb-3">
-          <label class="form-label" for="autor">Autor</label>
-          <input
-                  class="form-control"
-                  id="autor"
-                  placeholder="Autor do livro"
-                  th:field="*{autor}"
-                  type="text"
-          >
-          <p th:if="${#fields.hasErrors('autor')}" class="text-danger"  th:errors="*{autor}"></p>
+          <label for="titulo" class="form-label">Título</label>
+          <input type="text" class="form-control" id="titulo" th:field="*{titulo}" placeholder="Título do livro" required>
+          <p th:if="${#fields.hasErrors('titulo')}" class="text-danger" th:errors="*{titulo}"></p>
         </div>
 
+        <!-- Autores -->
         <div class="mb-3">
-          <label class="form-label" for="editora">Editora</label>
-          <input
-                  class="form-control"
-                  id="editora"
-                  placeholder="Editora do livro"
-                  th:field="*{editora}"
-                  type="text"
-          >
-          <p th:if="${#fields.hasErrors('editora')}" class="text-danger"  th:errors="*{editora}"></p>
+          <label class="form-label">Autores</label>
+          <div id="autoresList">
+            <div th:each="autor : ${livro.autores}" class="input-group mb-2">
+              <input type="text" class="form-control" th:name="autores" th:value="${autor}" placeholder="Nome do autor">
+              <button type="button" class="btn btn-outline-danger" onclick="this.parentElement.remove()">
+                <i class="bi bi-dash-circle"></i>
+              </button>
+            </div>
+          </div>
+          <div class="input-group mb-3">
+            <input type="text" id="autorInput" class="form-control" placeholder="Adicionar novo autor">
+            <button type="button" class="btn btn-outline-success" onclick="adicionarAutor()">
+              <i class="bi bi-plus-circle"></i> Adicionar
+            </button>
+          </div>
         </div>
+
+        <!-- Editora -->
         <div class="mb-3">
-          <label class="form-label" for="imageUrl">Capa URL</label>
-          <input
-                  class="form-control"
-                  id="imageUrl"
-                  placeholder="URL da capa do livro"
-                  th:field="*{imageUrl}"
-                  type="url"
-          >
+          <label for="editora" class="form-label">Editora</label>
+          <input type="text" class="form-control" id="editora" th:field="*{editora}" placeholder="Editora" required>
+          <p th:if="${#fields.hasErrors('editora')}" class="text-danger" th:errors="*{editora}"></p>
         </div>
-        <div class="form-group">
-          <label for="tipoLivro">Tipo do Livro</label>
-          <select
-                  class="form-control"
-                  id="tipoLivro"
-                  th:field="*{tipo}"
-          >
+
+        <!-- Capa URL -->
+        <div class="mb-3">
+          <label for="imageUrl" class="form-label">Capa URL</label>
+          <input type="url" class="form-control" id="imageUrl" th:field="*{imageUrl}" placeholder="URL da capa">
+        </div>
+
+        <!-- Tipo do Livro -->
+        <div class="mb-3">
+          <label for="tipoLivro" class="form-label">Tipo</label>
+          <select class="form-control" id="tipoLivro" th:field="*{tipo}">
             <option value="FISICO">Físico</option>
-            <option VALUE="DIGITAL">Digital</option>
+            <option value="DIGITAL">Digital</option>
           </select>
-          <p th:if="${#fields.hasErrors('tipo')}" class="text-danger"  th:errors="*{tipo}"></p>
         </div>
-        <div class="form-group">
-          <label for="descricao">Descrição</label>
-          <textarea
-                  class="form-control"
-                  id="descricao"
-                  placeholder="Descrição do livro"
-                  rows="3"
-                  th:field="*{descricao}"
-          ></textarea>
-        </div>
+
+        <!-- Descrição -->
         <div class="mb-3">
-          <label class="form-label" for="qtdExamplares">Quantidade de Exemplares</label>
-          <input
-                  class="form-control"
-                  id="qtdExamplares"
-                  placeholder="Quantidade de Exemplares"
-                  th:field="*{qtdExemplares}"
-                  type="number"
-          >
-          <p th:if="${#fields.hasErrors('qtdExemplares')}" class="text-danger"  th:errors="*{qtdExemplares}"></p>
+          <label for="descricao" class="form-label">Descrição</label>
+          <textarea class="form-control" id="descricao" th:field="*{descricao}" rows="3" placeholder="Descrição"></textarea>
         </div>
-        <button class="btn btn-primary" type="submit">Salvar</button>
+
+        <!-- Quantidade de Exemplares -->
+        <div class="mb-3">
+          <label for="qtdExemplares" class="form-label">Quantidade de Exemplares</label>
+          <input type="number" class="form-control" id="qtdExemplares" th:field="*{qtdExemplares}" min="1">
+        </div>
+
+        <!-- Botão de Salvar -->
+        <div class="d-grid">
+          <button class="btn btn-primary" type="submit">Salvar</button>
+        </div>
       </form>
     </div>
   </section>
 </main>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>

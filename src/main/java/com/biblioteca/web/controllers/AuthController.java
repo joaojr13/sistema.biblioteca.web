@@ -1,6 +1,5 @@
 package com.biblioteca.web.controllers;
 
-import com.biblioteca.web.dtos.RegistrationDto;
 import com.biblioteca.web.models.UserEntity;
 import com.biblioteca.web.services.UserService;
 import jakarta.validation.Valid;
@@ -26,23 +25,23 @@ public class AuthController {
 
     @GetMapping("/register")
     public String getRegisterForm(Model model) {
-        RegistrationDto userDto = new RegistrationDto();
+        UserEntity userDto = new UserEntity();
         model.addAttribute("user", userDto);
         return "register";
     }
 
     @PostMapping("/register/save")
-    public String register(@Valid @ModelAttribute("user") RegistrationDto registrationDto, BindingResult bindingResult, Model model) {
+    public String register(@Valid @ModelAttribute("user") UserEntity registrationDto, BindingResult bindingResult, Model model) {
         UserEntity existingUserEntityEmail = userService.findByEmail(registrationDto.getEmail());
 
         if (existingUserEntityEmail != null && existingUserEntityEmail.getEmail() != null && !existingUserEntityEmail.getEmail().isEmpty()) {
-            bindingResult.rejectValue("email", "Já existe um usuario com esse email/username");
+            bindingResult.rejectValue("email", "error.user", "Já existe um usuario com esse email/username");
         }
 
         UserEntity existingUserEntityName = userService.findByName(registrationDto.getUsername());
 
         if (existingUserEntityName != null && existingUserEntityName.getUsername() != null && !existingUserEntityName.getUsername().isEmpty()) {
-            bindingResult.rejectValue("username", "Já existe um usuario com esse email/username");
+            bindingResult.rejectValue("username", "error.user","Já existe um usuario com esse email/username");
         }
 
         if (bindingResult.hasErrors()) {
@@ -51,6 +50,6 @@ public class AuthController {
         }
 
         userService.saveUser(registrationDto);
-        return "redirect:/livros-list";
+        return "redirect:/livros";
     }
 }

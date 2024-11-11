@@ -1,13 +1,12 @@
 package com.biblioteca.web.dtos;
 
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -16,7 +15,9 @@ public class LivroDto {
     @NotEmpty(message = "O titulo do livro nao pode ser vazio")
     private String titulo;
     @NotEmpty(message = "O autor do livro nao pode ser vazio")
-    private String autor;
+
+    private List<String> autores;
+
     @NotEmpty(message = "A editora do livro nao pode ser vazio")
     private String editora;
     private String isbn;

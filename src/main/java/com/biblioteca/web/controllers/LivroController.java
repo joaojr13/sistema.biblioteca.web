@@ -49,14 +49,14 @@ public class LivroController {
 
     @GetMapping("/livros/{livroId}/edit")
     public String editLivroForm(@PathVariable Long livroId, Model model) {
-        LivroDto livro = livroService.findLivroById(livroId);
+        Livro livro = livroService.findLivroById(livroId);
         model.addAttribute("livro", livro);
         return "livros-edit";
     }
 
     @PostMapping("/livros/{livroId}/edit")
     public String updateLivro(@PathVariable Long livroId,
-                              @Valid @ModelAttribute("livro") LivroDto livro,
+                              @Valid @ModelAttribute("livro") Livro livro,
                               BindingResult bindingResult, Model model)
     {
 
@@ -73,8 +73,8 @@ public class LivroController {
 
     @GetMapping("/livros/{livroId}/details")
     public String detailsLivro(@PathVariable Long livroId, Model model) {
-        LivroDto livroDto = livroService.findLivroById(livroId);
-        model.addAttribute("livro", livroDto);
+        Livro livro = livroService.findLivroById(livroId);
+        model.addAttribute("livro", livro);
         return "livros-details";
     }
 

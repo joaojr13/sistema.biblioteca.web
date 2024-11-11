@@ -53,7 +53,7 @@ public class ClienteController {
     }
 
     @PostMapping("/clientes/{clienteId}/edit")
-    public String updateLivro(@PathVariable Long clienteId,
+    public String updateCliente(@PathVariable Long clienteId,
                               @Valid @ModelAttribute("usuario") UsuarioDto usuario,
                               BindingResult bindingResult, Model model)
     {

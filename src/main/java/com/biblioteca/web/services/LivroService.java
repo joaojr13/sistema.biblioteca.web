@@ -1,6 +1,7 @@
 package com.biblioteca.web.services;
 
 import com.biblioteca.web.dtos.LivroDto;
+import com.biblioteca.web.models.Livro;
 
 import java.util.List;
 
@@ -9,9 +10,9 @@ public interface LivroService {
 
     void salvarLivro(LivroDto livro);
 
-    LivroDto findLivroById(Long livroId);
+    Livro findLivroById(Long livroId);
 
-    void updateLivro(LivroDto livro);
+    void updateLivro(Livro livro);
 
     List<LivroDto> searchLivros(String query);
 }

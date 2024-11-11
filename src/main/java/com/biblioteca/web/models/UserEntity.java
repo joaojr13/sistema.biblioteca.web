@@ -1,6 +1,8 @@
 package com.biblioteca.web.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Null;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -22,17 +24,28 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotEmpty(message = "O username é obrigatório!")
     private String username;
+
     private String nomeCompleto;
+
+    @NotEmpty(message = "O e-mail é obrigatório!")
+    @Email(message = "O formato do e-mail está inválido!")
     private String email;
+
+    @NotEmpty
     private String password;
+
     private String telefone;
+
     private String cpf;
+
     @Column(nullable = false, columnDefinition = "BIT DEFAULT 1")
     private boolean ativo;
 
     @CreationTimestamp
     private LocalDateTime createdOn;
+
     @UpdateTimestamp
     private LocalDateTime updatedOn;
 
