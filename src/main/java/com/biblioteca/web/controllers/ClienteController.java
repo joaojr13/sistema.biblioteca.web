@@ -1,22 +1,16 @@
 package com.biblioteca.web.controllers;
 
-import com.biblioteca.web.dtos.LivroDto;
 import com.biblioteca.web.dtos.UsuarioDto;
 import com.biblioteca.web.models.UserEntity;
 import com.biblioteca.web.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 public class ClienteController {
@@ -29,9 +23,16 @@ public class ClienteController {
     }
 
     @GetMapping("/clientes")
-    public String clientes(Model model) {
-        List<UserEntity> usuarios = userService.findAll();
+    public String getClientes(
+            @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value =  "status", required = false) String status,
+            Model model) {
+
+        List<UserEntity> usuarios = userService.pesquisarClientes(search, status);
         model.addAttribute("usuarios", usuarios);
+        model.addAttribute("search", search);
+        model.addAttribute("status", status);
+
         return "clientes";
     }
 
@@ -39,22 +40,14 @@ public class ClienteController {
     public String editClienteForm(@PathVariable Long clienteId, Model model) {
         UserEntity usuario = userService.findById(clienteId);
 
-        UsuarioDto usuarioDto = UsuarioDto.builder()
-                .id(usuario.getId())
-                .nomeCompleto(usuario.getNomeCompleto())
-                .email(usuario.getEmail())
-                .cpf(usuario.getCpf())
-                .ativo(usuario.isAtivo())
-                .telefone(usuario.getTelefone())
-                .build();
-
-        model.addAttribute("usuario", usuarioDto);
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("roles", userService.findAllRoles());
         return "clientes-edit";
     }
 
     @PostMapping("/clientes/{clienteId}/edit")
     public String updateCliente(@PathVariable Long clienteId,
-                              @Valid @ModelAttribute("usuario") UsuarioDto usuario,
+                              @Valid @ModelAttribute("usuario") UserEntity usuario,
                               BindingResult bindingResult, Model model)
     {
         if(bindingResult.hasErrors()) {
@@ -67,8 +60,9 @@ public class ClienteController {
         existingUser.setNomeCompleto(usuario.getNomeCompleto());
         existingUser.setEmail(usuario.getEmail());
         existingUser.setCpf(usuario.getCpf());
-        existingUser.setAtivo(usuario.isAtivo());
         existingUser.setTelefone(usuario.getTelefone());
+        existingUser.setAtivo(usuario.isAtivo());
+        existingUser.setRoles(usuario.getRoles());
 
         userService.updateUser(existingUser);
         return "redirect:/clientes";

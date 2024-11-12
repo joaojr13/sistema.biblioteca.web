@@ -27,13 +27,14 @@ public class UserEntity {
     @NotEmpty(message = "O username é obrigatório!")
     private String username;
 
+    @NotEmpty(message = "O nome é obrigatório!")
     private String nomeCompleto;
 
     @NotEmpty(message = "O e-mail é obrigatório!")
     @Email(message = "O formato do e-mail está inválido!")
     private String email;
 
-    @NotEmpty
+    @NotEmpty(message = "Favor informar uma senha!")
     private String password;
 
     private String telefone;

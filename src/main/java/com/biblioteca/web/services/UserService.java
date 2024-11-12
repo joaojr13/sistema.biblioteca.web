@@ -1,5 +1,6 @@
 package com.biblioteca.web.services;
 
+import com.biblioteca.web.models.Role;
 import com.biblioteca.web.models.UserEntity;
 import jakarta.validation.constraints.NotEmpty;
 
@@ -19,4 +20,8 @@ public interface UserService {
     void updateUser(UserEntity usuario);
 
     void deleteById(Long clienteId);
+
+    List<UserEntity> pesquisarClientes(String search, String status);
+
+    List<Role> findAllRoles();
 }

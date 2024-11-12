@@ -66,4 +66,25 @@ public class UserServiceImpl implements UserService {
     public void deleteById(Long clienteId) {
         userRepository.deleteById(clienteId);
     }
+
+    @Override
+    public List<UserEntity> pesquisarClientes(String search, String status) {
+        if ((search == null || search.isEmpty()) && (status == null || status.isEmpty())) {
+            return userRepository.findAll();
+        } else if (status != null && !status.isEmpty()) {
+            boolean isAtivo = status.equalsIgnoreCase("ativo");
+            if (search != null && !search.isEmpty()) {
+                return userRepository.searchByNomeOrEmailAndStatus(search, isAtivo);
+            } else {
+                return userRepository.findByAtivo(isAtivo);
+            }
+        } else {
+            return userRepository.findByNomeCompletoContainingIgnoreCaseOrEmailContainingIgnoreCase(search, search);
+        }
+    }
+
+    @Override
+    public List<Role> findAllRoles() {
+        return roleRepository.findAll();
+    }
 }
