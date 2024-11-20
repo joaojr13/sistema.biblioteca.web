@@ -59,6 +59,12 @@ public class Livro {
         long emprestimosAtivos = emprestimos.stream()
                 .filter(emprestimo -> !emprestimo.isFinalizado())
                 .count();
-        return qtdExemplares > emprestimosAtivos;
+
+        long reservasAtivas = reservas.stream()
+                .filter(Reserva::isAtivo)
+                .count();
+
+        return qtdExemplares > (emprestimosAtivos + reservasAtivas);
     }
 }
+

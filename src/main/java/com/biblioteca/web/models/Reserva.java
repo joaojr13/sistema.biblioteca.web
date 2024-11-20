@@ -5,7 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,6 +23,22 @@ public class Reserva {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "cliente_id", nullable = false)
+    private UserEntity cliente;
+
+    private LocalDateTime dataRetirada;
+
+    @CreationTimestamp
+    private LocalDateTime createdOn;
+
+    @UpdateTimestamp
+    private LocalDateTime finishedOn;
+
+    @ManyToOne
+    @JoinColumn(name = "status_id", nullable = false)
+    private ReservaStatus status;
+
     @ManyToMany
     @JoinTable(
             name = "reserva_livro",
@@ -27,4 +46,8 @@ public class Reserva {
             inverseJoinColumns = @JoinColumn(name = "livro_id")
     )
     private Set<Livro> livros = new HashSet<>();
+
+    public boolean isAtivo(){
+        return status.getNome().equalsIgnoreCase("ATIVA");
+    }
 }

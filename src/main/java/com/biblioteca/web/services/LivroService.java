@@ -15,4 +15,6 @@ public interface LivroService {
     void updateLivro(Livro livro);
 
     List<LivroDto> searchLivros(String query);
+
+    List<LivroDto> findAllLivrosDisponiveis();
 }

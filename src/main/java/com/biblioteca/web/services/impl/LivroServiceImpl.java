@@ -47,6 +47,15 @@ public class LivroServiceImpl implements LivroService {
         return livros.stream().map(this::mapToLivroDto).collect(Collectors.toList());
     }
 
+    @Override
+    public List<LivroDto> findAllLivrosDisponiveis() {
+        return livroRepository.findAll()
+                .stream()
+                .filter(Livro::isDisponivel)
+                .map(this::mapToLivroDto)
+                .collect(Collectors.toList());
+    }
+
     private Livro mapToLivro(LivroDto livro) {
         return Livro.builder()
                 .id(livro.getId())

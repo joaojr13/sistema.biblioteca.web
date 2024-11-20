@@ -57,4 +57,11 @@ public class UserEntity {
             inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")}
     )
     private List<Role> roles = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "cliente",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY
+    )
+    private List<Reserva> reservas = new ArrayList<>();
 }

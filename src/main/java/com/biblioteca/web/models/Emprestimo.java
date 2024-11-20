@@ -51,5 +51,6 @@ public class Emprestimo {
     private LocalDateTime updatedOn;
 
     private LocalDateTime finishedOn;
+
     private boolean finalizado;
 }
