@@ -45,11 +45,26 @@ public class Livro {
     @UpdateTimestamp
     private LocalDateTime updatedOn;
 
-    @ManyToMany(mappedBy = "livros")
-    private Set<Reserva> reservas = new HashSet<>();
+    @Column(nullable = false, columnDefinition = "BIT DEFAULT 1")
+    private boolean ativo = true;
 
-    @ManyToMany(mappedBy = "livros")
-    private Set<Emprestimo> emprestimos = new HashSet<>();
+    @ManyToMany(mappedBy = "livros", fetch = FetchType.EAGER)
+    private List<Reserva> reservas = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "livros", fetch = FetchType.EAGER)
+    private List<Emprestimo> emprestimos = new ArrayList<>();
+
+    public int getQuantidadeDisponivel() {
+        long emprestimosAtivos = emprestimos.stream()
+                .filter(emprestimo -> !emprestimo.isFinalizado())
+                .count();
+
+        long reservasAtivas = reservas.stream()
+                .filter(Reserva::isAtivo)
+                .count();
+
+        return (int) (qtdExemplares - (emprestimosAtivos + reservasAtivas));
+    }
 
     /**
      * Verifica se o livro está disponível para empréstimo.
@@ -64,7 +79,7 @@ public class Livro {
                 .filter(Reserva::isAtivo)
                 .count();
 
-        return qtdExemplares > (emprestimosAtivos + reservasAtivas);
+        return (qtdExemplares > (emprestimosAtivos + reservasAtivas));
     }
 }
 

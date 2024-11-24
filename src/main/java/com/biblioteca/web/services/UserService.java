@@ -1,5 +1,6 @@
 package com.biblioteca.web.services;
 
+import com.biblioteca.web.models.Reserva;
 import com.biblioteca.web.models.Role;
 import com.biblioteca.web.models.UserEntity;
 import jakarta.validation.constraints.NotEmpty;
@@ -11,9 +12,7 @@ public interface UserService {
 
     UserEntity findByEmail(@NotEmpty String email);
 
-    UserEntity findByName(@NotEmpty String username);
-
-    List<UserEntity> findAll();
+    UserEntity findByUsername(@NotEmpty String username);
 
     UserEntity findById(@NotEmpty Long id);
 

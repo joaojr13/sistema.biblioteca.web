@@ -71,7 +71,7 @@
 
                     <!-- Quantidade Disponível -->
                     <div class="mb-4">
-                        <h5>Quantidade Disponível: <span th:text="${livro.qtdExemplares - livro.emprestimos.size()}"></span></h5>
+                        <h5>Quantidade Disponível: <span th:text="${livro.getQuantidadeDisponivel()}"></span></h5>
                     </div>
 
                     <!-- Descrição do Livro -->

@@ -26,6 +26,8 @@ public class LivroDto {
     private String tipo;
     private String descricao;
 
+    private int qtdDisponivel;
+
     @Min(value = 1, message = "A quantidade de exemplares deve ser maior que 1")
     private int qtdExemplares;
     private LocalDateTime createdOn;

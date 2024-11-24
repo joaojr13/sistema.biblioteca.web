@@ -72,7 +72,7 @@
                         </div>
 
                         <!-- Status do Usuário (Ativo/Inativo) -->
-                        <div class="mb-3">
+                        <div sec:authorize="hasAnyRole('ADMIN', 'FUNCIONARIO')" class="mb-3">
                             <label for="ativo" class="form-label">Status do Usuário</label>
                             <select id="ativo" th:field="*{ativo}" class="form-select">
                                 <option value="true">Ativo</option>

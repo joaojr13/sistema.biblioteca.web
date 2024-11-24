@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Data
 @Builder
@@ -27,7 +27,7 @@ public class Reserva {
     @JoinColumn(name = "cliente_id", nullable = false)
     private UserEntity cliente;
 
-    private LocalDateTime dataRetirada;
+    private LocalDate dataRetirada;
 
     @CreationTimestamp
     private LocalDateTime createdOn;
@@ -45,7 +45,7 @@ public class Reserva {
             joinColumns = @JoinColumn(name = "reserva_id"),
             inverseJoinColumns = @JoinColumn(name = "livro_id")
     )
-    private Set<Livro> livros = new HashSet<>();
+    private List<Livro> livros = new ArrayList<>();
 
     public boolean isAtivo(){
         return status.getNome().equalsIgnoreCase("ATIVA");

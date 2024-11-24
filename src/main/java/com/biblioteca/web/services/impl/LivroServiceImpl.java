@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class LivroServiceImpl implements LivroService {
-    private LivroRepository livroRepository;
+    private final LivroRepository livroRepository;
 
     public LivroServiceImpl(LivroRepository livroRepository) {
         this.livroRepository = livroRepository;
@@ -20,7 +20,7 @@ public class LivroServiceImpl implements LivroService {
 
     @Override
     public List<LivroDto> findAllLivros() {
-        List<Livro> livros = livroRepository.findAll();
+        List<Livro> livros = livroRepository.findAllByAtivoTrue();
         return livros.stream().map(this::mapToLivroDto).collect(Collectors.toList());
     }
 
@@ -48,12 +48,29 @@ public class LivroServiceImpl implements LivroService {
     }
 
     @Override
+    public List<LivroDto> searchLivrosAtivos(String query) {
+        List<Livro> livros = livroRepository.searchLivrosAtivos(query);
+        return livros.stream().map(this::mapToLivroDto).collect(Collectors.toList());
+    }
+
+    @Override
     public List<LivroDto> findAllLivrosDisponiveis() {
         return livroRepository.findAll()
                 .stream()
+                .filter(Livro::isAtivo)
                 .filter(Livro::isDisponivel)
                 .map(this::mapToLivroDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteLivro(Long livroId) {
+        Livro livro = livroRepository.findById(livroId).isPresent() ? livroRepository.findById(livroId).get() : null;
+
+        if(livro == null) { return; }
+
+        livro.setAtivo(false);
+        livroRepository.save(livro);
     }
 
     private Livro mapToLivro(LivroDto livro) {
@@ -83,6 +100,7 @@ public class LivroServiceImpl implements LivroService {
                 .descricao(livro.getDescricao())
                 .createdOn(livro.getCreatedOn())
                 .updatedOn(livro.getUpdatedOn())
+                .qtdDisponivel(livro.getQuantidadeDisponivel())
                 .build();
     }
 }

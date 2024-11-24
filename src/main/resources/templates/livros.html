@@ -67,9 +67,11 @@
                             <p class="card-text text-multiline-truncate mb-0" th:text="${livro.descricao}"></p>
                         </div>
                         <div class="card-footer p-4 pt-0 bg-transparent border-top-0">
-                            <div class="d-flex align-items-end justify-content-between">
+                            <div class="d-flex align-items-end justify-content-end" style="gap: 10px">
                                 <a class="btn btn-primary" sec:authorize="hasAnyRole('FUNCIONARIO', 'ADMIN')"
                                    th:href="@{/livros/{livroId}/edit(livroId=${livro.id})}">Editar</a>
+                                <a class="btn btn-danger" sec:authorize="hasAnyRole('FUNCIONARIO', 'ADMIN')"
+                                   th:href="@{/livros/{livroId}/delete(livroId=${livro.id})}">Excluir</a>
                             </div>
                         </div>
                     </div>

@@ -1,10 +1,8 @@
 package com.biblioteca.web.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "roles")
+@EqualsAndHashCode
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,4 +20,12 @@ public class Role {
     private String name;
     @ManyToMany(mappedBy = "roles")
     private List<UserEntity> usuarios = new ArrayList<>();
+
+    public boolean isAdmin() {
+        return name.equalsIgnoreCase("ADMIN");
+    }
+
+    public boolean isFuncionario() {
+        return name.equalsIgnoreCase("FUNCIONARIO");
+    }
 }

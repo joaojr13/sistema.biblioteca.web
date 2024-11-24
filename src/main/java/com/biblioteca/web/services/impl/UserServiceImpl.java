@@ -43,13 +43,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserEntity findByName(String username) {
+    public UserEntity findByUsername(String username) {
         return userRepository.findByUsername(username);
-    }
-
-    @Override
-    public List<UserEntity> findAll() {
-        return userRepository.findAll();
     }
 
     @Override
@@ -87,4 +82,6 @@ public class UserServiceImpl implements UserService {
     public List<Role> findAllRoles() {
         return roleRepository.findAll();
     }
+
+
 }

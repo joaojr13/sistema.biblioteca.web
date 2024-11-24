@@ -10,7 +10,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.userdetails.User;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -42,7 +44,7 @@ public class Emprestimo {
             joinColumns = @JoinColumn(name = "emprestimo_id"),
             inverseJoinColumns = @JoinColumn(name = "livro_id")
     )
-    private Set<Livro> livros = new HashSet<>();
+    private List<Livro> livros = new ArrayList<>();
 
     @CreationTimestamp
     private LocalDateTime createdOn;

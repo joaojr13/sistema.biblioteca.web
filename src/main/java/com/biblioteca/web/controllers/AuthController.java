@@ -38,7 +38,7 @@ public class AuthController {
             bindingResult.rejectValue("email", "error.user", "Já existe um usuario com esse email/username");
         }
 
-        UserEntity existingUserEntityName = userService.findByName(registrationDto.getUsername());
+        UserEntity existingUserEntityName = userService.findByUsername(registrationDto.getUsername());
 
         if (existingUserEntityName != null && existingUserEntityName.getUsername() != null && !existingUserEntityName.getUsername().isEmpty()) {
             bindingResult.rejectValue("username", "error.user","Já existe um usuario com esse email/username");

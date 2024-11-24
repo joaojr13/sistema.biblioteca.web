@@ -45,6 +45,8 @@
                        data-bs-toggle="dropdown" aria-expanded="false"
                        th:text="'Bem-vindo '+ ${#authentication.name}"></a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownPortfolio">
+                        <li sec:authorize="hasAnyRole('CLIENTE')"><a class="dropdown-item"
+                                                                                 th:href="@{/clientes/{clienteId}/edit-user(clienteId=${#authentication.getName()})}">Alterar minhas informações</a></li>
                         <li sec:authorize="hasAnyRole('FUNCIONARIO','ADMIN')"><a class="dropdown-item"
                                                                                  th:href="@{/livros/new}">Adicionar um
                             livro</a></li>

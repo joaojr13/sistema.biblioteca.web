@@ -16,5 +16,9 @@ public interface LivroService {
 
     List<LivroDto> searchLivros(String query);
 
+    List<LivroDto> searchLivrosAtivos(String query);
+
     List<LivroDto> findAllLivrosDisponiveis();
+
+    void deleteLivro(Long livroId);
 }
