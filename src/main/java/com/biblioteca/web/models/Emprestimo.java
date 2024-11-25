@@ -52,7 +52,9 @@ public class Emprestimo {
     @UpdateTimestamp
     private LocalDateTime updatedOn;
 
-    private LocalDateTime finishedOn;
+    private LocalDateTime dataDevolucao;
 
-    private boolean finalizado;
+    @ManyToOne
+    @JoinColumn(name = "status_id", nullable = false)
+    private EmprestimoStatus status;
 }

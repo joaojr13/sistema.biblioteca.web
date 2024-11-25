@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Novo Empréstimo</title>
+    <script>
+        function adicionarLivro() {
+            const livrosList = document.getElementById('livrosList');
+            const novoLivro = document.getElementById('novoLivro');
+            const selectedValue = novoLivro.value;
+            const selectedText = novoLivro.options[novoLivro.selectedIndex].text;
+
+            if (!selectedValue) {
+                alert('Selecione um livro válido!');
+                return;
+            }
+
+            // Verificar se o livro já foi adicionado
+            const livrosExistentes = Array.from(livrosList.querySelectorAll('select')).map(
+                select => select.value
+            );
+            if (livrosExistentes.includes(selectedValue)) {
+                alert('Este livro já foi adicionado!');
+                return;
+            }
+
+            // Criar nova linha para o livro
+            const div = document.createElement('div');
+            div.classList.add('input-group', 'mb-2');
+            div.innerHTML = `
+      <select class="form-select" name="livros[]" readonly>
+        <option value="${selectedValue}" selected>${selectedText}</option>
+      </select>
+      <button type="button" class="btn btn-outline-danger" onclick="this.parentElement.remove()">
+        <i class="bi bi-dash-circle"></i>
+      </button>
+    `;
+
+            livrosList.appendChild(div);
+        }
+    </script>
+</head>
+<main layout:fragment="body">
+    <div class="container">
+        <!-- Título Centralizado -->
+        <div class="row">
+            <div class="col text-center my-4">
+                <h1 class="fw-bolder">Novo Empréstimo</h1>
+            </div>
+        </div>
+
+        <!-- Alerta para Reserva Não Encontrada -->
+        <div th:if="${reservaEncontrada == false}" class="alert alert-danger">
+            Reserva não encontrada. Verifique o ID e tente novamente.
+        </div>
+
+        <div class="row">
+            <!-- Reserva -->
+            <div class="col-md-12 mb-3">
+                <label for="reserva" class="form-label">Reserva (opcional)</label>
+                <form th:action="@{/emprestimos/create/search}" method="get" class="d-flex">
+                    <!-- Campo para Inserir ID da Reserva -->
+                    <input type="number" id="reserva" name="reserva" class="form-control"
+                           placeholder="Digite o ID da reserva"
+                           th:value="${reserva != null ? reserva.id : ''}"
+                           th:disabled="${reserva != null}" required>
+
+                    <!-- Botão para Buscar Reserva -->
+                    <button type="submit" class="btn btn-primary ms-2" th:disabled="${reserva != null}">
+                        <i class="bi bi-search"></i> Buscar Reserva
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Formulário -->
+        <form th:action="@{/emprestimos/create}" method="get">
+            <div class="row">
+                <!-- Cliente -->
+                <div th:if="${cliente != null}">
+                    <div class="col-md-6 mb-3">
+                        <label th:for="cliente" class="form-label">Cliente</label>
+                        <select class="form-select" name="clienteId"
+                                th:value="${cliente.id}"
+                                th:disabled="true"
+                                required>
+                            <option
+                                    th:value="${cliente.id}"
+                                    th:text="${cliente.nomeCompleto}"
+                                    selected >
+                                Cliente
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div th:if="${cliente == null}">
+                    <div class="col-md-6 mb-3">
+                        <label th:for="cliente" class="form-label">Cliente</label>
+                        <select th:id="cliente" name="clienteId" class="form-select" required>
+                            <option value="" disabled selected>Selecione um cliente</option>
+                            <!-- Loop pelos clientes -->
+                            <option th:each="cliente : ${clientes}"
+                                    th:value="${cliente.id}"
+                                    th:text="${cliente.nomeCompleto}">
+                                Cliente
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+
+                <!-- Funcionário -->
+                <div class="col-md-6 mb-3">
+                    <label for="funcionario" class="form-label">Funcionário</label>
+                    <input type="text" id="funcionario" class="form-control" th:value="${funcionario.nomeCompleto}"
+                           disabled>
+                </div>
+            </div>
+
+
+            <!-- Livros -->
+            <div class="mb-3">
+                <label class="form-label">Livros</label>
+                <div id="livrosList">
+                    <!-- Livros já associados à reserva -->
+                    <div th:if="${reserva != null}">
+                        <div th:each="livro : ${reserva.livros}" class="input-group mb-2">
+                            <select class="form-select" name="livros"
+                                    th:value="${livro.id}"
+                                    th:disabled="true">
+                                <option th:value="${livro.id}" th:text="${livro.titulo}" selected>
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adicionar novos livros -->
+                <div class="input-group mb-3">
+                    <select id="novoLivro" class="form-select">
+                        <option value="" disabled selected>Selecione um livro para adicionar</option>
+                        <option th:each="livro : ${livrosDisponiveis}" th:value="${livro.id}" th:text="${livro.titulo}">
+                        </option>
+                    </select>
+                    <button type="button" class="btn btn-outline-success" onclick="adicionarLivro()">
+                        <i class="bi bi-plus-circle"></i> Adicionar Livro
+                    </button>
+                </div>
+            </div>
+
+            <!-- Botões -->
+            <div class="row">
+                <div class="col text-end">
+                    <button type="submit" class="btn btn-success">Salvar
+                        Empréstimo
+                    </button>
+                    <a th:href="@{/emprestimos}" class="btn btn-secondary">Cancelar</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Adicionar novos campos de livro
+        document.getElementById('addLivro').addEventListener('click', function () {
+            const livroFields = document.getElementById('livroFields');
+            const newField = document.createElement('div');
+            newField.classList.add('d-flex', 'mb-2');
+            newField.innerHTML = `
+                <select name="livros[]" class="form-select">
+                    <option value="" disabled selected>Selecione um livro</option>
+                    <option th:each="livro : ${livrosDisponiveis}" th:value="\${livro.id}" th:text="\${livro.titulo}">Livro</option>
+                </select>
+                <button type="button" class="btn btn-danger ms-2 removeLivro">Remover</button>
+            `;
+            livroFields.appendChild(newField);
+
+            // Adicionar evento para remover o campo
+            newField.querySelector('.removeLivro').addEventListener('click', function () {
+                newField.remove();
+            });
+        });
+
+        // Remover campo existente
+        document.addEventListener('click', function (event) {
+            if (event.target.classList.contains('removeLivro')) {
+                event.target.parentElement.remove();
+            }
+        });
+    </script>
+</main>
+</html>

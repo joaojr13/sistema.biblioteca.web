@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -81,6 +82,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<Role> findAllRoles() {
         return roleRepository.findAll();
+    }
+
+    @Override
+    public List<UserEntity> findAllClientes() {
+        List<UserEntity> usuarios = userRepository.findAll();
+
+        return usuarios
+                .stream()
+                .filter(user -> user.getRoles().stream().allMatch(role -> role.getName().equalsIgnoreCase("CLIENTE")))
+                .collect(Collectors.toList());
     }
 
 

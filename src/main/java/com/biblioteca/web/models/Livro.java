@@ -10,9 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -56,7 +54,7 @@ public class Livro {
 
     public int getQuantidadeDisponivel() {
         long emprestimosAtivos = emprestimos.stream()
-                .filter(emprestimo -> !emprestimo.isFinalizado())
+                .filter(emprestimo -> emprestimo.getStatus().isAtivo())
                 .count();
 
         long reservasAtivas = reservas.stream()
@@ -72,7 +70,7 @@ public class Livro {
      */
     public boolean isDisponivel() {
         long emprestimosAtivos = emprestimos.stream()
-                .filter(emprestimo -> !emprestimo.isFinalizado())
+                .filter(emprestimo -> emprestimo.getStatus().isAtivo())
                 .count();
 
         long reservasAtivas = reservas.stream()
