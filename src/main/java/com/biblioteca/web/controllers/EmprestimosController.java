@@ -1,5 +1,8 @@
 package com.biblioteca.web.controllers;
 
+import com.biblioteca.web.dtos.EmprestimoComReservaDto;
+import com.biblioteca.web.dtos.EmprestimoSemReservaDto;
+import com.biblioteca.web.models.Emprestimo;
 import com.biblioteca.web.models.Reserva;
 import com.biblioteca.web.models.UserEntity;
 import com.biblioteca.web.security.SecurityUtil;
@@ -7,10 +10,14 @@ import com.biblioteca.web.services.EmprestimoService;
 import com.biblioteca.web.services.LivroService;
 import com.biblioteca.web.services.ReservaService;
 import com.biblioteca.web.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
 
 @Controller
 public class EmprestimosController {
@@ -29,6 +36,8 @@ public class EmprestimosController {
 
     @GetMapping("/emprestimos")
     public String emprestimos(Model model) {
+        List<Emprestimo> emprestimos = emprestimoService.findAllEmprestimosAtivos();
+        model.addAttribute("emprestimos", emprestimos);
         return "emprestimos";
     }
 
@@ -38,33 +47,100 @@ public class EmprestimosController {
 
         UserEntity usuario = userService.findByUsername(usernameSession);
 
-        model.addAttribute("reserva", null);
         model.addAttribute("funcionario", usuario);
         model.addAttribute("livrosDisponiveis", livroService.findAllLivrosDisponiveis());
-        model.addAttribute("clientes", userService.findAllClientes());
+        model.addAttribute("clientes", userService.findAllClientesAtivos());
+        model.addAttribute("emprestimo", new EmprestimoSemReservaDto());
 
         return "emprestimos-create";
     }
 
-    @GetMapping("/emprestimos/create/search")
-    public String searchReserva(@RequestParam(value = "reserva") Long reservaId, Model model ) {
-        Reserva reserva = reservaService.findById(reservaId);
+    @GetMapping("/emprestimos/create-with-reserva")
+    public String createWithReserva(Model model) {
+        String usernameSession = SecurityUtil.getSessionUser();
+        UserEntity usuario = userService.findByUsername(usernameSession);
+        model.addAttribute("funcionario", usuario);
+        model.addAttribute("livrosDisponiveis", livroService.findAllLivrosDisponiveis());
+        model.addAttribute("clientes", userService.findAllClientesAtivos());
+        model.addAttribute("emprestimo", new EmprestimoComReservaDto());
+        return "emprestimos-create-with-reserva";
+    }
 
-        if(reserva == null) {
-            model.addAttribute("reservaEncontrada", false);
-            return "redirect:/emprestimos-create";
+    @GetMapping("/emprestimos/create/c-search")
+    public String createEmprestimoWithCliente(
+            @RequestParam(value = "cliente", required = false) Long clienteId,
+            Model model) {
+
+        if (clienteId != null) {
+            model.addAttribute("cliente", userService.findById(clienteId));
         }
 
-        model.addAttribute("reserva", reserva);
-        model.addAttribute("cliente", reserva.getCliente());
         model.addAttribute("livrosDisponiveis", livroService.findAllLivrosDisponiveis());
-
         String usernameSession = SecurityUtil.getSessionUser();
-
         UserEntity usuario = userService.findByUsername(usernameSession);
-
         model.addAttribute("funcionario", usuario);
+        model.addAttribute("emprestimo", new EmprestimoSemReservaDto());
 
         return "emprestimos-create";
+    }
+
+    @GetMapping("/emprestimos/create/r-search")
+    public String createEmprestimoWithReserva(
+            @RequestParam(value = "reserva", required = false) Long reservaId,
+            Model model) {
+
+        if (reservaId != null) {
+            model.addAttribute("reserva", reservaService.findById(reservaId));
+        }
+
+        model.addAttribute("livrosDisponiveis", livroService.findAllLivrosDisponiveis());
+        String usernameSession = SecurityUtil.getSessionUser();
+        UserEntity usuario = userService.findByUsername(usernameSession);
+        model.addAttribute("funcionario", usuario);
+        model.addAttribute("emprestimo", new EmprestimoComReservaDto());
+
+        return "emprestimos-create-with-reserva";
+    }
+
+    @PostMapping("/emprestimos/create")
+    public String createEmprestimo(@Valid @ModelAttribute("emprestimo") EmprestimoSemReservaDto emprestimoDto,
+                                   BindingResult bindingResult,
+                                   Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("emprestimo", emprestimoDto);
+            return "emprestimos-create";
+        }
+
+        if (emprestimoDto.getIdCliente() == null || emprestimoDto.getIdFuncionario() == null) {
+            return "redirect:/emprestimos";
+        }
+
+        if(emprestimoDto.getLivros() == null || emprestimoDto.getLivros().isEmpty())
+        {
+            return "redirect:/emprestimos";
+        }
+
+        return "redirect:/emprestimos";
+    }
+
+    @PostMapping("/emprestimos/create-with-reserva")
+    public String createEmprestimo(@Valid @ModelAttribute("emprestimo") EmprestimoComReservaDto emprestimoDto,
+                                   BindingResult bindingResult,
+                                   Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("emprestimo", emprestimoDto);
+            return "emprestimos-create";
+        }
+
+        if (emprestimoDto.getIdCliente() == null || emprestimoDto.getIdFuncionario() == null) {
+            return "redirect:/emprestimos";
+        }
+
+        if(emprestimoDto.getLivros() == null || emprestimoDto.getLivros().isEmpty())
+        {
+            return "redirect:/emprestimos";
+        }
+
+        return "redirect:/emprestimos";
     }
 }

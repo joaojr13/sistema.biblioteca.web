@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.userdetails.User;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -52,7 +53,7 @@ public class Emprestimo {
     @UpdateTimestamp
     private LocalDateTime updatedOn;
 
-    private LocalDateTime dataDevolucao;
+    private LocalDate dataDevolucao;
 
     @ManyToOne
     @JoinColumn(name = "status_id", nullable = false)

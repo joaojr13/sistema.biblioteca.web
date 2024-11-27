@@ -28,9 +28,25 @@
                 <li sec:authorize="hasAnyRole('CLIENTE', 'FUNCIONARIO', 'ADMIN')" class="nav-item"><a class="nav-link"
                                                                                                       th:href="@{/reservas}">Reservas</a>
                 </li>
-                <li sec:authorize="hasAnyRole('FUNCIONARIO', 'ADMIN')" class="nav-item"><a class="nav-link"
-                                                                                           th:href="@{/emprestimos}">Emprestimos</a>
+                <!--                <li sec:authorize="hasAnyRole('FUNCIONARIO', 'ADMIN')" class="nav-item"><a class="nav-link"-->
+                <!--                                                                                           th:href="@{/emprestimos}">Emprestimos</a>-->
+                <!--                </li>-->
+
+                <li sec:authorize="hasAnyRole('FUNCIONARIO', 'ADMIN')" class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdownEmprestimo" href="#" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false"
+                       th:text="Emprestimos"></a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownEmprestimo">
+                        <li><a class="dropdown-item"
+                               th:href="@{/emprestimos/create}">Novo Empréstimo Sem Reserva</a></li>
+                        <li><a class="dropdown-item"
+                               th:href="@{/emprestimos/create-with-reserva}">Novo Empréstimo Com Reserva</a></li>
+                        <li sec:authorize="hasAnyRole('FUNCIONARIO','ADMIN')"><a class="dropdown-item"
+                                                                                 th:href="@{/emprestimos}">Gerenciar
+                            Empréstimos</a></li>
+                    </ul>
                 </li>
+
                 <li sec:authorize="hasAnyRole('FUNCIONARIO', 'ADMIN')" class="nav-item"><a class="nav-link"
                                                                                            th:href="@{/clientes}">Clientes</a>
                 </li>
@@ -46,7 +62,8 @@
                        th:text="'Bem-vindo '+ ${#authentication.name}"></a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownPortfolio">
                         <li sec:authorize="hasAnyRole('CLIENTE')"><a class="dropdown-item"
-                                                                                 th:href="@{/clientes/{clienteId}/edit-user(clienteId=${#authentication.getName()})}">Alterar minhas informações</a></li>
+                                                                     th:href="@{/clientes/{clienteId}/edit-user(clienteId=${#authentication.getName()})}">Alterar
+                            minhas informações</a></li>
                         <li sec:authorize="hasAnyRole('FUNCIONARIO','ADMIN')"><a class="dropdown-item"
                                                                                  th:href="@{/livros/new}">Adicionar um
                             livro</a></li>
@@ -81,5 +98,4 @@
 </body>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="js/scripts.js"></script>
 </html>

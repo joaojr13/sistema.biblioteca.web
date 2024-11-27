@@ -8,7 +8,6 @@
     <title>Novo Empréstimo</title>
     <script>
         function adicionarLivro() {
-            console.log("Botão clicado!");
             const livrosList = document.getElementById('livrosList');
             const novoLivro = document.getElementById('novoLivro');
             const selectedValue = novoLivro.value;
@@ -153,16 +152,16 @@
     <div class="container">
         <!-- Título da Página -->
         <div class="text-center my-4">
-            <h1 class="fw-bolder">Novo Empréstimo Sem Reserva</h1>
+            <h1 class="fw-bolder">Novo Empréstimo Com Reserva</h1>
         </div>
 
-        <!-- Seção: Buscar Cliente -->
+        <!-- Seção: Buscar Reserva -->
         <div class="mb-4">
-            <h2 class="section-title">Buscar Cliente</h2>
-            <form th:action="@{/emprestimos/create/c-search}" method="get" class="d-flex">
-                <input type="number" id="cliente" name="cliente" class="form-control"
-                       placeholder="Digite o ID do cliente"
-                       th:value="${cliente != null ? cliente.id : ''}" required>
+            <h2 class="section-title">Buscar Reserva</h2>
+            <form th:action="@{/emprestimos/create/r-search}" method="get" class="d-flex">
+                <input type="number" id="reserva" name="reserva" class="form-control"
+                       placeholder="Digite o ID da Reserva"
+                       th:value="${reserva != null ? reserva.id : ''}" required>
                 <button type="submit" class="btn btn-primary ms-2">
                     <i class="bi bi-search"></i> Buscar
                 </button>
@@ -170,18 +169,34 @@
         </div>
 
         <!-- Formulário Principal -->
-        <form th:action="@{/emprestimos/create}" method="post" th:object="${emprestimo}">
+        <form th:action="@{/emprestimos/create-with-reserva}" method="post" th:object="${emprestimo}">
+
+            <!-- Seção: Id da Reserva -->
+            <div th:if="${reserva != null}">
+                <h2 class="card-title">Detalhes da Reserva</h2>
+                <div class="card-body">
+                    <p><strong>Cliente:</strong> <span id="reserva-cliente"></span></p>
+                    <p><strong>Data de Retirada:</strong> <span id="reserva-data-retirada"></span></p>
+                    <p><strong>Criado em:</strong> <span id="reserva-created-on"></span></p>
+                    <p><strong>Finalizado em:</strong> <span id="reserva-finished-on"></span></p>
+                    <p><strong>Status:</strong> <span id="reserva-status"></span></p>
+                </div>
+                <input type="hidden" name="idReserva" th:value="${reserva.id}" required/>
+            </div>
+
+
             <!-- Seção: Informações Gerais -->
             <div class="mb-4">
                 <h2 class="section-title">Informações do Empréstimo</h2>
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label th:for="idCliente" class="form-label">Cliente</label>
-                        <select name="idCliente" class="form-select" th:id="idCliente" th:if="${cliente != null}"
+                        <select name="idCliente" class="form-select" th:id="idCliente" th:if="${reserva != null}"
                                 readonly required>
-                            <option th:value="${cliente.id}" th:text="${cliente.nomeCompleto}">Cliente</option>
+                            <option th:value="${reserva.cliente.id}" th:text="${reserva.cliente.nomeCompleto}">Cliente
+                            </option>
                         </select>
-                        <select name="idCliente" class="form-select" th:if="${cliente == null}" required>
+                        <select name="idCliente" class="form-select" th:if="${reserva == null}" required>
                             <option value="" disabled selected>Selecione um cliente</option>
                             <option th:each="cliente : ${clientes}" th:value="${cliente.id}"
                                     th:text="${cliente.nomeCompleto}"></option>
@@ -199,17 +214,31 @@
             <!-- Seção: Livros -->
             <div class="mb-4">
                 <h2 class="section-title">Adicionar Livros</h2>
+
+                <!-- Livros da Reserva -->
+                <div th:if="${reserva != null}">
+                    <div th:each="livro : ${reserva.livros}" class="input-group mb-2" id="livrosExistentes">
+                        <select class="form-select" name="livros" id="livros" readonly>
+                            <option th:value="${livro.id}" th:text="${livro.titulo}" selected></option>
+                        </select>
+                    </div>
+                </div>
+                <!-- Livros da Reserva -->
+
+                <!-- Livros para Selecionar -->
                 <div id="livrosList"></div>
                 <div class="input-group mb-3">
                     <select id="novoLivro" class="form-select">
                         <option value="" disabled selected>Selecione um livro</option>
-                        <option th:each="livro : ${livrosDisponiveis}" th:value="${livro.id}"
+                        <option th:each="livro : ${livrosDisponiveis}"
+                                th:value="${livro.id}"
                                 th:text="${livro.titulo}"></option>
                     </select>
                     <button type="button" class="btn btn-outline-success" onclick="adicionarLivro()">
                         <i class="bi bi-plus-circle"></i> Adicionar
                     </button>
                 </div>
+                <!-- Livros para Selecionar -->
             </div>
 
             <!-- Seção: Data de Devolução -->

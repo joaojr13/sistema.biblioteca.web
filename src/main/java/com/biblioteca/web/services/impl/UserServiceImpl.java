@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntity findById(Long id) {
-        return userRepository.findById(id).get();
+        return userRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -85,14 +85,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserEntity> findAllClientes() {
+    public List<UserEntity> findAllClientesAtivos() {
         List<UserEntity> usuarios = userRepository.findAll();
 
         return usuarios
                 .stream()
                 .filter(user -> user.getRoles().stream().allMatch(role -> role.getName().equalsIgnoreCase("CLIENTE")))
+                .filter(UserEntity::isAtivo)
                 .collect(Collectors.toList());
     }
-
-
 }
