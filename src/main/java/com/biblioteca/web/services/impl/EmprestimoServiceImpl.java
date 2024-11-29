@@ -36,7 +36,7 @@ public class EmprestimoServiceImpl implements EmprestimoService {
     public void criarEmprestimoSemReserva(EmprestimoSemReservaDto emprestimoDto) {
         Emprestimo emprestimo = new Emprestimo();
 
-        UserEntity cliente = userService.findById(emprestimoDto.getIdCliente());
+        UserEntity cliente = userService.findByUsername(emprestimoDto.getUsernameCliente());
         UserEntity funcionario = userService.findById(emprestimoDto.getIdFuncionario());
 
         emprestimo.setCliente(cliente);
@@ -109,6 +109,7 @@ public class EmprestimoServiceImpl implements EmprestimoService {
                 if(status.equalsIgnoreCase("todos")) return emprestimoRepository.findAll();
                 return emprestimoRepository.findAllByStatusNomeContainingIgnoreCase(status);
             } else {
+                if(status.equalsIgnoreCase("todos")) return emprestimoRepository.findAllByClienteId(user.getId());
                 return emprestimoRepository.findAllByClienteIdAndStatusNomeContainingIgnoreCase(user.getId(), status);
             }
         } else if (status != null && !status.isEmpty()) {
@@ -126,5 +127,29 @@ public class EmprestimoServiceImpl implements EmprestimoService {
                 return emprestimoRepository.findByClienteIdAndClienteNomeCompletoContainingIgnoreCaseOrLivrosTituloContainingIgnoreCase(user.getId(), search, search);
             }
         }
+    }
+
+    @Override
+    public List<Emprestimo> findAllEmprestimosAtivosByUser(UserEntity user) {
+        return emprestimoRepository.findAllByClienteIdAndStatusNomeContainingIgnoreCase(user.getId(), "Ativo");
+    }
+
+    @Override
+    public Emprestimo findById(Long emprestimoId) {
+        return emprestimoRepository.findById(emprestimoId).orElse(null);
+    }
+
+    @Override
+    public void devolver(Emprestimo emprestimo) {
+        EmprestimoStatus status = statusRepository.findByNomeIgnoreCase("FINALIZADO");
+        emprestimo.setStatus(status);
+        emprestimoRepository.save(emprestimo);
+    }
+
+    @Override
+    public void cancelar(Emprestimo emprestimo) {
+        EmprestimoStatus status = statusRepository.findByNomeIgnoreCase("CANCELADO");
+        emprestimo.setStatus(status);
+        emprestimoRepository.save(emprestimo);
     }
 }

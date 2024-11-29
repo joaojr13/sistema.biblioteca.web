@@ -32,23 +32,23 @@
                 <!--                                                                                           th:href="@{/emprestimos}">Emprestimos</a>-->
                 <!--                </li>-->
 
-                <li sec:authorize="hasAnyRole('FUNCIONARIO', 'ADMIN')" class="nav-item dropdown">
+                <li sec:authorize="hasAnyRole('FUNCIONARIO', 'ADMIN', 'CLIENTE')" class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="navbarDropdownEmprestimo" href="#" role="button"
                        data-bs-toggle="dropdown" aria-expanded="false"
                        th:text="Emprestimos"></a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownEmprestimo">
-                        <li><a class="dropdown-item"
-                               th:href="@{/emprestimos/create}">Novo Empréstimo Sem Reserva</a></li>
-                        <li><a class="dropdown-item"
-                               th:href="@{/emprestimos/create-with-reserva}">Novo Empréstimo Com Reserva</a></li>
                         <li sec:authorize="hasAnyRole('FUNCIONARIO','ADMIN')"><a class="dropdown-item"
+                               th:href="@{/emprestimos/create}">Novo Empréstimo Sem Reserva</a></li>
+                        <li sec:authorize="hasAnyRole('FUNCIONARIO','ADMIN')"><a class="dropdown-item"
+                               th:href="@{/emprestimos/create-with-reserva}">Novo Empréstimo Com Reserva</a></li>
+                        <li sec:authorize="hasAnyRole('FUNCIONARIO','ADMIN', 'CLIENTE')"><a class="dropdown-item"
                                                                                  th:href="@{/emprestimos}">Gerenciar
                             Empréstimos</a></li>
                     </ul>
                 </li>
 
                 <li sec:authorize="hasAnyRole('FUNCIONARIO', 'ADMIN')" class="nav-item"><a class="nav-link"
-                                                                                           th:href="@{/clientes}">Clientes</a>
+                                                                                           th:href="@{/clientes}">Usuarios</a>
                 </li>
 
                 <li sec:authorize="!isAuthenticated()" class="nav-item"><a class="nav-link me-3 btn btn-primary"

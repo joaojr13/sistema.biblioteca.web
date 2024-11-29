@@ -160,9 +160,9 @@
         <div class="mb-4">
             <h2 class="section-title">Buscar Cliente</h2>
             <form th:action="@{/emprestimos/create/c-search}" method="get" class="d-flex">
-                <input type="number" id="cliente" name="cliente" class="form-control"
-                       placeholder="Digite o ID do cliente"
-                       th:value="${cliente != null ? cliente.id : ''}" required>
+                <input type="text" id="cliente" name="cliente" class="form-control"
+                       placeholder="Digite o Username do cliente"
+                       th:value="${cliente != null ? cliente.username : ''}" required>
                 <button type="submit" class="btn btn-primary ms-2">
                     <i class="bi bi-search"></i> Buscar
                 </button>
@@ -177,13 +177,13 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label th:for="idCliente" class="form-label">Cliente</label>
-                        <select name="idCliente" class="form-select" th:id="idCliente" th:if="${cliente != null}"
+                        <select name="usernameCliente" class="form-select" th:id="idCliente" th:if="${cliente != null}"
                                 readonly required>
-                            <option th:value="${cliente.id}" th:text="${cliente.nomeCompleto}">Cliente</option>
+                            <option th:value="${cliente.username}" th:text="${cliente.nomeCompleto}">Cliente</option>
                         </select>
-                        <select name="idCliente" class="form-select" th:if="${cliente == null}" required>
+                        <select name="UsernameCliente" class="form-select" th:if="${cliente == null}" required>
                             <option value="" disabled selected>Selecione um cliente</option>
-                            <option th:each="cliente : ${clientes}" th:value="${cliente.id}"
+                            <option th:each="cliente : ${clientes}" th:value="${cliente.username}"
                                     th:text="${cliente.nomeCompleto}"></option>
                         </select>
                     </div>

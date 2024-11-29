@@ -21,7 +21,7 @@
         <div class="d-flex flex-wrap align-items-center justify-content-center gap-3 mb-4">
             <!-- Formulário de Filtro -->
             <div class="container-md">
-                <form sec:authorize="hasAnyRole('FUNCIONARIO', 'ADMIN')" th:action="@{/reservas}" method="get"
+                <form sec:authorize="hasAnyRole('FUNCIONARIO', 'ADMIN', 'CLIENTE')" th:action="@{/reservas}" method="get"
                       class="d-flex align-items-center flex-grow-1 gap-2">
                     <input type="text" name="search" class="form-control" placeholder="Pesquisar por cliente ou livro"
                            th:value="${search}">
@@ -84,15 +84,13 @@
                     <td th:text="${#temporals.format(reserva.updatedOn, 'dd/MM/yyyy HH:mm')}">Última Modificação</td>
                     <td>
                         <div class="btn-group">
-                            <!--<a type="button"
-                               class="btn btn-outline-secondary align-items-center"
-                               th:href="@{/reservas/{reservaId}/edit(reservaId=${reserva.id})}">
-                                <i class="bi bi-pencil-square"></i>
-                            </a>--->
+                            <!-- Botão de Cancelar -->
                             <a type="button"
-                               class="btn btn-outline-secondary"
-                               th:href="@{/reservas/{reservaId}/delete(reservaId=${reserva.id})}">
-                                <i class="bi bi-trash"></i>
+                               th:href="@{/reservas/{reservaId}/delete(reservaId=${reserva.id})}"
+                               class="btn btn-outline-danger"
+                               th:if="${reserva.status.nome.equalsIgnoreCase('Ativa')}"
+                            >
+                                <i class="bi bi-x-circle"></i> Cancelar
                             </a>
                         </div>
                     </td>

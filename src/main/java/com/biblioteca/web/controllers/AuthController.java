@@ -50,6 +50,6 @@ public class AuthController {
         }
 
         userService.saveUser(registrationDto);
-        return "redirect:/livros";
+        return "redirect:/login?accountCreated=true";
     }
 }

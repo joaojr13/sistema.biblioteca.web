@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EmprestimoSemReservaDto {
-    private Long idCliente;
+    private String usernameCliente;
     private Long idFuncionario;
     private List<Long> livros;
     @DateTimeFormat(pattern = "yyyy-MM-dd")

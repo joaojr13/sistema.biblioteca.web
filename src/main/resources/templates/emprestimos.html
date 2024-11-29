@@ -21,7 +21,7 @@
         <div class="d-flex flex-wrap align-items-center justify-content-center gap-3 mb-4">
             <!-- Formulário de Filtro -->
             <div class="container-md">
-                <form sec:authorize="hasAnyRole('FUNCIONARIO', 'ADMIN')" th:action="@{/emprestimos/search}" method="get" class="d-flex align-items-center flex-grow-1 gap-2">
+                <form sec:authorize="hasAnyRole('FUNCIONARIO', 'ADMIN', 'CLIENTE')" th:action="@{/emprestimos/search}" method="get" class="d-flex align-items-center flex-grow-1 gap-2">
                     <input type="text" name="search" class="form-control" placeholder="Pesquisar por cliente ou livro" th:value="${search}">
                     <select name="status" class="form-select">
                         <option value="todos" th:selected="${status == 'todos'}">Todos</option>
@@ -51,6 +51,7 @@
                     <th scope="col">Funcionário</th>
                     <th scope="col">Livros</th>
                     <th scope="col">Data de Criação</th>
+                    <th scope="col">Data de Devolução</th>
                     <th scope="col">Status</th>
                     <th scope="col">Última Modificação</th>
                     <th scope="col">Ações</th>
@@ -67,6 +68,7 @@
                         </ul>
                     </td>
                     <td th:text="${#temporals.format(emprestimo.createdOn, 'dd/MM/yyyy HH:mm')}">Data de Criação</td>
+                    <td th:text="${#temporals.format(emprestimo.dataDevolucao, 'dd/MM/yyyy')}">Data de Devolução</td>
                     <td>
                         <span th:if="${emprestimo.status.nome.equalsIgnoreCase('Ativo')}" th:text="${emprestimo.status.nome}"
                               class="badge bg-success-light text-success text-uppercase">
@@ -83,17 +85,29 @@
                         <div class="btn-group">
                             <!-- Botão de Devolução -->
                             <a type="button"
-                               th:href="@{/emprestimos/{id}/devolver(id=${emprestimo.id})}"
+                               sec:authorize="hasAnyRole('FUNCIONARIO', 'ADMIN')"
+                               th:href="@{/emprestimos/{id}/devolucao(id=${emprestimo.id})}"
                                class="btn btn-outline-success"
-                               th:if="${emprestimo.status.nome == 'ATIVO'}">
-                                <i class="bi bi-arrow-return-left"></i> Devolver
+                               th:if="${emprestimo.status.nome.equalsIgnoreCase('Ativo')}">
+                                <i class="bi bi-arrow-return-left"></i> Devolução
                             </a>
+
+                            <!-- Botão de Expirar -->
+                            <!--<a type="button"
+                               th:href="@{/emprestimos/{id}/expirar(id=${emprestimo.id})}"
+                               class="btn btn-outline-warning"
+                               th:if="${emprestimo.status.nome.equalsIgnoreCase('Ativo')}"
+                            >
+                                <i class="bi bi-hourglass-split"></i> Expirar
+                            </a>-->
 
                             <!-- Botão de Cancelar -->
                             <a type="button"
+                               sec:authorize="hasAnyRole('FUNCIONARIO', 'ADMIN')"
                                th:href="@{/emprestimos/{id}/cancelar(id=${emprestimo.id})}"
                                class="btn btn-outline-danger"
-                               th:if="${emprestimo.status.nome == 'ATIVO'}">
+                               th:if="${emprestimo.status.nome.equalsIgnoreCase('Ativo')}"
+                            >
                                 <i class="bi bi-x-circle"></i> Cancelar
                             </a>
                         </div>

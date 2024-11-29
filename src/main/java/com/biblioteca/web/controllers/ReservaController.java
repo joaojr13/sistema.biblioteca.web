@@ -17,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 public class ReservaController {
@@ -43,8 +44,17 @@ public class ReservaController {
         }
 
         UserEntity user = userService.findByUsername(username);
+        boolean userCanViewEverything = user.getRoles().stream().anyMatch(Role::isAdmin) || user.getRoles().stream().anyMatch(Role::isFuncionario);
 
-        List<Reserva> reservas = reservaService.findReservasByParams(user, search, status);
+        if (userCanViewEverything) {
+            List<Reserva> reservas = reservaService.findReservasByParams(user, search, status);
+
+            model.addAttribute("reservas", reservas);
+
+            return "reservas";
+        }
+
+        List<Reserva> reservas = reservaService.findReservasByParams(user, search, status).stream().filter(e -> Objects.equals(e.getCliente().getId(), user.getId())).toList();
 
         model.addAttribute("reservas", reservas);
 

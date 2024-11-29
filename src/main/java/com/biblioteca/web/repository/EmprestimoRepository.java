@@ -26,4 +26,6 @@ public interface EmprestimoRepository extends JpaRepository<Emprestimo, Long> {
     List<Emprestimo> findByClienteIdAndClienteNomeCompletoContainingIgnoreCaseOrLivrosTituloContainingIgnoreCaseAndStatusNomeContainingIgnoreCase(Long clienteId, @NotEmpty(message = "O nome é obrigatório!") String clienteNomeCompleto, String livrosTitulo, String statusNome);
 
     List<Emprestimo> findAllByClienteNomeCompletoContainingIgnoreCaseOrLivrosTituloContainingIgnoreCase(@NotEmpty(message = "O nome é obrigatório!") String clienteNomeCompleto, String livrosTitulo);
+
+    List<Emprestimo> findAllByClienteId(Long id);
 }

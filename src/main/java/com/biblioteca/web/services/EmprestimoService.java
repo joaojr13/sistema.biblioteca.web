@@ -14,4 +14,12 @@ public interface EmprestimoService {
     List<Emprestimo> findAllEmprestimosAtivos();
 
     List<Emprestimo> findEmprestimosByParams(UserEntity user, String search, String status);
+
+    List<Emprestimo> findAllEmprestimosAtivosByUser(UserEntity user);
+
+    Emprestimo findById(Long emprestimoId);
+
+    void devolver(Emprestimo emprestimo);
+
+    void cancelar(Emprestimo emprestimo);
 }

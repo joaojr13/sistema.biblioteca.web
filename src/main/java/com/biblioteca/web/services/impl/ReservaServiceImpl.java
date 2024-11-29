@@ -68,6 +68,7 @@ public class ReservaServiceImpl implements ReservaService {
                 if(status.equalsIgnoreCase("todos")) return reservaRepository.findAll();
                 return reservaRepository.findAllByStatusNomeContainingIgnoreCase(status);
             } else {
+                if(status.equalsIgnoreCase("todos")) return reservaRepository.findAllByClienteId(user.getId());
                 return reservaRepository.findAllByClienteIdAndStatusNomeContainingIgnoreCase(user.getId(), status);
             }
         } else if (status != null && !status.isEmpty()) {
