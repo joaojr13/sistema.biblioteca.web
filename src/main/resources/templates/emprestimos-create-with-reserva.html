@@ -171,17 +171,22 @@
         <!-- Formulário Principal -->
         <form th:action="@{/emprestimos/create-with-reserva}" method="post" th:object="${emprestimo}">
 
-            <!-- Seção: Id da Reserva -->
-            <div th:if="${reserva != null}">
-                <h2 class="card-title">Detalhes da Reserva</h2>
-                <div class="card-body">
-                    <p><strong>Cliente:</strong> <span id="reserva-cliente"></span></p>
-                    <p><strong>Data de Retirada:</strong> <span id="reserva-data-retirada"></span></p>
-                    <p><strong>Criado em:</strong> <span id="reserva-created-on"></span></p>
-                    <p><strong>Finalizado em:</strong> <span id="reserva-finished-on"></span></p>
-                    <p><strong>Status:</strong> <span id="reserva-status"></span></p>
+            <!-- Seção: Detalhes da Reserva -->
+            <div th:if="${reserva != null}" class="mb-4">
+                <h2 class="section-title">Detalhes da Reserva</h2>
+                <div class="card">
+                    <div class="card-body">
+                        <input type="hidden" th:value="${reserva.id}" name="idReserva"/>
+                        <p><strong>Cliente:</strong> <span th:text="${reserva.cliente.nomeCompleto}"></span></p>
+                        <p><strong>Data de Retirada:</strong> <span th:text="${#temporals.format(reserva.dataRetirada, 'dd/MM/yyyy')}"></span></p>
+                        <p><strong>Criado em:</strong> <span th:text="${#temporals.format(reserva.createdOn, 'dd/MM/yyyy HH:mm')}"></span></p>
+                        <p>
+                            <strong>Status:</strong>
+                            <span th:classappend="${reserva.status.nome == 'Cancelada' ? 'text-danger' : (reserva.status.nome == 'Ativa' ? 'text-success' : 'text-secondary')}"
+                                  th:text="${reserva.status.nome}"></span>
+                        </p>
+                    </div>
                 </div>
-                <input type="hidden" name="idReserva" th:value="${reserva.id}" required/>
             </div>
 
 
@@ -250,10 +255,20 @@
             </div>
 
             <!-- Botões de Ação -->
-            <div class="d-flex justify-content-end mt-4">
-                <a th:href="@{/emprestimos}" class="btn btn-secondary me-2">Cancelar</a>
-                <button type="submit" class="btn btn-success">Salvar</button>
+            <div th:if="${reserva != null}">
+                <div class="d-flex justify-content-end mt-4">
+                    <a th:href="@{/emprestimos}" class="btn btn-secondary me-2">Cancelar</a>
+                    <button type="submit" class="btn btn-success" th:disabled="${!reserva.status.isAtiva()}">Salvar</button>
+                </div>
             </div>
+
+            <div th:if="${reserva == null}">
+                <div class="d-flex justify-content-end mt-4">
+                    <a th:href="@{/emprestimos}" class="btn btn-secondary me-2">Cancelar</a>
+                    <button type="submit" class="btn btn-success" disabled>Salvar</button>
+                </div>
+            </div>
+
         </form>
     </div>
 </main>

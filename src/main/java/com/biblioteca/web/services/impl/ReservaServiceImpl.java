@@ -87,4 +87,11 @@ public class ReservaServiceImpl implements ReservaService {
         }
     }
 
+    @Override
+    public void finalizarReserva(Reserva reserva) {
+        ReservaStatus status = reservaStatusRepository.findByNomeIgnoreCase("FINALIZADA");
+        reserva.setStatus(status);
+        reservaRepository.save(reserva);
+    }
+
 }

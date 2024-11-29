@@ -41,6 +41,25 @@ public class EmprestimosController {
         return "emprestimos";
     }
 
+    @GetMapping("/emprestimos/search")
+    public String emprestimosSearch( @RequestParam(value = "search", required = false) String search,
+                                     @RequestParam(value =  "status", required = false) String status,
+                                     Model model) {
+        String username = SecurityUtil.getSessionUser();
+
+        if (username == null) {
+            return "redirect:/emprestimos";
+        }
+
+        UserEntity user = userService.findByUsername(username);
+
+        List<Emprestimo> emprestimos = emprestimoService.findEmprestimosByParams(user, search, status);
+
+        model.addAttribute("emprestimos", emprestimos);
+
+        return "emprestimos";
+    }
+
     @GetMapping("/emprestimos/create")
     public String create(Model model) {
         String usernameSession = SecurityUtil.getSessionUser();
@@ -53,17 +72,6 @@ public class EmprestimosController {
         model.addAttribute("emprestimo", new EmprestimoSemReservaDto());
 
         return "emprestimos-create";
-    }
-
-    @GetMapping("/emprestimos/create-with-reserva")
-    public String createWithReserva(Model model) {
-        String usernameSession = SecurityUtil.getSessionUser();
-        UserEntity usuario = userService.findByUsername(usernameSession);
-        model.addAttribute("funcionario", usuario);
-        model.addAttribute("livrosDisponiveis", livroService.findAllLivrosDisponiveis());
-        model.addAttribute("clientes", userService.findAllClientesAtivos());
-        model.addAttribute("emprestimo", new EmprestimoComReservaDto());
-        return "emprestimos-create-with-reserva";
     }
 
     @GetMapping("/emprestimos/create/c-search")
@@ -84,6 +92,37 @@ public class EmprestimosController {
         return "emprestimos-create";
     }
 
+    @PostMapping("/emprestimos/create")
+    public String createEmprestimoSemReserva(@Valid @ModelAttribute("emprestimo") EmprestimoSemReservaDto emprestimoDto,
+                                             BindingResult bindingResult,
+                                             Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("emprestimo", emprestimoDto);
+            return "emprestimos-create";
+        }
+
+        if (emprestimoDto.getIdCliente() == null || emprestimoDto.getIdFuncionario() == null) {
+            return "redirect:/emprestimos";
+        }
+
+        if (emprestimoDto.getLivros() == null || emprestimoDto.getLivros().isEmpty()) {
+            return "redirect:/emprestimos";
+        }
+
+        return "redirect:/emprestimos";
+    }
+
+    @GetMapping("/emprestimos/create-with-reserva")
+    public String createWithReserva(Model model) {
+        String usernameSession = SecurityUtil.getSessionUser();
+        UserEntity usuario = userService.findByUsername(usernameSession);
+        model.addAttribute("funcionario", usuario);
+        model.addAttribute("livrosDisponiveis", livroService.findAllLivrosDisponiveis());
+        model.addAttribute("clientes", userService.findAllClientesAtivos());
+        model.addAttribute("emprestimo", new EmprestimoComReservaDto());
+        return "emprestimos-create-with-reserva";
+    }
+
     @GetMapping("/emprestimos/create/r-search")
     public String createEmprestimoWithReserva(
             @RequestParam(value = "reserva", required = false) Long reservaId,
@@ -102,31 +141,10 @@ public class EmprestimosController {
         return "emprestimos-create-with-reserva";
     }
 
-    @PostMapping("/emprestimos/create")
-    public String createEmprestimo(@Valid @ModelAttribute("emprestimo") EmprestimoSemReservaDto emprestimoDto,
-                                   BindingResult bindingResult,
-                                   Model model) {
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("emprestimo", emprestimoDto);
-            return "emprestimos-create";
-        }
-
-        if (emprestimoDto.getIdCliente() == null || emprestimoDto.getIdFuncionario() == null) {
-            return "redirect:/emprestimos";
-        }
-
-        if(emprestimoDto.getLivros() == null || emprestimoDto.getLivros().isEmpty())
-        {
-            return "redirect:/emprestimos";
-        }
-
-        return "redirect:/emprestimos";
-    }
-
     @PostMapping("/emprestimos/create-with-reserva")
-    public String createEmprestimo(@Valid @ModelAttribute("emprestimo") EmprestimoComReservaDto emprestimoDto,
-                                   BindingResult bindingResult,
-                                   Model model) {
+    public String createEmprestimoComReserva(@Valid @ModelAttribute("emprestimo") EmprestimoComReservaDto emprestimoDto,
+                                             BindingResult bindingResult,
+                                             Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("emprestimo", emprestimoDto);
             return "emprestimos-create";
@@ -136,10 +154,11 @@ public class EmprestimosController {
             return "redirect:/emprestimos";
         }
 
-        if(emprestimoDto.getLivros() == null || emprestimoDto.getLivros().isEmpty())
-        {
+        if (emprestimoDto.getLivros() == null || emprestimoDto.getLivros().isEmpty()) {
             return "redirect:/emprestimos";
         }
+
+        emprestimoService.criarEmprestimoComReserva(emprestimoDto);
 
         return "redirect:/emprestimos";
     }

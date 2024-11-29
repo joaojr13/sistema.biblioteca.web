@@ -21,13 +21,13 @@
         <div class="d-flex flex-wrap align-items-center justify-content-center gap-3 mb-4">
             <!-- Formulário de Filtro -->
             <div class="container-md">
-                <form sec:authorize="hasAnyRole('FUNCIONARIO', 'ADMIN')" th:action="@{/emprestimos}" method="get" class="d-flex align-items-center flex-grow-1 gap-2">
+                <form sec:authorize="hasAnyRole('FUNCIONARIO', 'ADMIN')" th:action="@{/emprestimos/search}" method="get" class="d-flex align-items-center flex-grow-1 gap-2">
                     <input type="text" name="search" class="form-control" placeholder="Pesquisar por cliente ou livro" th:value="${search}">
                     <select name="status" class="form-select">
                         <option value="todos" th:selected="${status == 'todos'}">Todos</option>
-                        <option value="ativa" th:selected="${status == 'ativa'}">Ativas</option>
-                        <option value="finalizada" th:selected="${status == 'finalizada'}">Finalizadas</option>
-                        <option value="cancelada" th:selected="${status == 'cancelada'}">Canceladas</option>
+                        <option value="ativo" th:selected="${status == 'ativa'}">Ativas</option>
+                        <option value="finalizado" th:selected="${status == 'finalizada'}">Finalizadas</option>
+                        <option value="cancelado" th:selected="${status == 'cancelada'}">Canceladas</option>
                     </select>
                     <button type="submit" class="btn btn-primary">Filtrar</button>
                 </form>
@@ -68,8 +68,14 @@
                     </td>
                     <td th:text="${#temporals.format(emprestimo.createdOn, 'dd/MM/yyyy HH:mm')}">Data de Criação</td>
                     <td>
-                        <span th:classappend="${emprestimo.status.nome == 'ATIVO' ? 'badge bg-success-light text-success text-uppercase' : 'badge bg-danger-light text-danger text-uppercase'}"
-                              th:text="${emprestimo.status.nome}">
+                        <span th:if="${emprestimo.status.nome.equalsIgnoreCase('Ativo')}" th:text="${emprestimo.status.nome}"
+                              class="badge bg-success-light text-success text-uppercase">
+                        </span>
+                        <span th:if="${emprestimo.status.nome.equalsIgnoreCase('Cancelado')}" th:text="${emprestimo.status.nome}"
+                              class="badge bg-danger-light text-danger text-uppercase">
+                        </span>
+                        <span th:if="${emprestimo.status.nome.equalsIgnoreCase('Finalizado')}" th:text="${emprestimo.status.nome}"
+                              class="badge bg-primary-light text-primary text-uppercase">
                         </span>
                     </td>
                     <td th:text="${#temporals.format(emprestimo.updatedOn, 'dd/MM/yyyy HH:mm')}">Última Modificação</td>

@@ -21,8 +21,10 @@
         <div class="d-flex flex-wrap align-items-center justify-content-center gap-3 mb-4">
             <!-- Formulário de Filtro -->
             <div class="container-md">
-                <form sec:authorize="hasAnyRole('FUNCIONARIO', 'ADMIN')" th:action="@{/reservas}" method="get" class="d-flex align-items-center flex-grow-1 gap-2">
-                    <input type="text" name="search" class="form-control" placeholder="Pesquisar por cliente ou livro" th:value="${search}">
+                <form sec:authorize="hasAnyRole('FUNCIONARIO', 'ADMIN')" th:action="@{/reservas}" method="get"
+                      class="d-flex align-items-center flex-grow-1 gap-2">
+                    <input type="text" name="search" class="form-control" placeholder="Pesquisar por cliente ou livro"
+                           th:value="${search}">
                     <select name="status" class="form-select">
                         <option value="todos" th:selected="${status == 'todos'}">Todos</option>
                         <option value="ativa" th:selected="${status == 'ativa'}">Ativas</option>
@@ -69,11 +71,17 @@
                     <td th:text="${#temporals.format(reserva.dataRetirada, 'dd/MM/yyyy')}">Data de Retirada</td>
                     <td th:text="${#temporals.format(reserva.createdOn, 'dd/MM/yyyy HH:mm')}">Data de Criação</td>
                     <td>
-                        <span th:classappend="${reserva.isAtivo()} ? 'badge bg-success-light text-success text-uppercase' : 'badge bg-danger-light text-danger text-uppercase'"
-                              th:text="${reserva.status.nome}">
+                        <span th:if="${reserva.status.nome.equalsIgnoreCase('Ativa')}" th:text="${reserva.status.nome}"
+                              class="badge bg-success-light text-success text-uppercase">
+                        </span>
+                        <span th:if="${reserva.status.nome.equalsIgnoreCase('Cancelada')}" th:text="${reserva.status.nome}"
+                              class="badge bg-danger-light text-danger text-uppercase">
+                        </span>
+                        <span th:if="${reserva.status.nome.equalsIgnoreCase('Finalizada')}" th:text="${reserva.status.nome}"
+                              class="badge bg-primary-light text-primary text-uppercase">
                         </span>
                     </td>
-                    <td th:text="${#temporals.format(reserva.finishedOn, 'dd/MM/yyyy HH:mm')}">Última Modificação</td>
+                    <td th:text="${#temporals.format(reserva.updatedOn, 'dd/MM/yyyy HH:mm')}">Última Modificação</td>
                     <td>
                         <div class="btn-group">
                             <!--<a type="button"

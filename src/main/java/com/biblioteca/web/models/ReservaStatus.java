@@ -19,4 +19,8 @@ public class ReservaStatus {
 
     @Column(nullable = false, unique = true)
     private String nome;
+
+    public boolean isAtiva(){
+        return !nome.equalsIgnoreCase("FINALIZADA") && !nome.equalsIgnoreCase("CANCELADA");
+    }
 }

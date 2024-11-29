@@ -33,7 +33,7 @@ public class Reserva {
     private LocalDateTime createdOn;
 
     @UpdateTimestamp
-    private LocalDateTime finishedOn;
+    private LocalDateTime updatedOn;
 
     @ManyToOne
     @JoinColumn(name = "status_id", nullable = false)
@@ -50,4 +50,6 @@ public class Reserva {
     public boolean isAtivo(){
         return status.getNome().equalsIgnoreCase("ATIVA");
     }
+
+    public boolean isFinalizada() { return status.getNome().equalsIgnoreCase("FINALIZADA") || status.getNome().equalsIgnoreCase("CANCELADA"); }
 }

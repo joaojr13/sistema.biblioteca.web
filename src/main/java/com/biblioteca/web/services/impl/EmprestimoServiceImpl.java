@@ -66,11 +66,6 @@ public class EmprestimoServiceImpl implements EmprestimoService {
         UserEntity cliente = userService.findById(emprestimoDto.getIdCliente());
         UserEntity funcionario = userService.findById(emprestimoDto.getIdFuncionario());
 
-        if(emprestimoDto.getIdReserva() != null) {
-            Reserva reserva = reservaService.findById(emprestimoDto.getIdReserva());
-            emprestimo.setReserva(reserva);
-        }
-
         emprestimo.setCliente(cliente);
         emprestimo.setFuncionario(funcionario);
 
@@ -88,13 +83,48 @@ public class EmprestimoServiceImpl implements EmprestimoService {
 
         emprestimo.setDataDevolucao(emprestimoDto.getDataDevolucao());
 
+        Reserva reserva = reservaService.findById(emprestimoDto.getIdReserva());
+        emprestimo.setReserva(reserva);
+
         emprestimoRepository.save(emprestimo);
 
-
+        reservaService.finalizarReserva(reserva);
     }
 
     @Override
     public List<Emprestimo> findAllEmprestimosAtivos() {
         return emprestimoRepository.findAllByStatusNomeContaining("Ativo");
+    }
+
+    @Override
+    public List<Emprestimo> findEmprestimosByParams(UserEntity user, String search, String status) {
+        boolean userCanViewEverything = user.getRoles().stream().anyMatch(Role::isAdmin) || user.getRoles().stream().anyMatch(Role::isFuncionario);
+
+        if ((search == null || search.isEmpty()) && (status == null || status.isEmpty()) && userCanViewEverything) {
+            return emprestimoRepository.findAllByStatusNomeNotIgnoreCase("Cancelada");
+        } else if ((search == null || search.isEmpty()) && (status == null || status.isEmpty())) {
+            return emprestimoRepository.findAllByClienteIdAndStatusNomeNotIgnoreCase(user.getId(), "Cancelada");
+        } else if (status != null && !status.isEmpty() && (search == null || search.isEmpty())) {
+            if (userCanViewEverything) {
+                if(status.equalsIgnoreCase("todos")) return emprestimoRepository.findAll();
+                return emprestimoRepository.findAllByStatusNomeContainingIgnoreCase(status);
+            } else {
+                return emprestimoRepository.findAllByClienteIdAndStatusNomeContainingIgnoreCase(user.getId(), status);
+            }
+        } else if (status != null && !status.isEmpty()) {
+            if (userCanViewEverything) {
+                if(status.equalsIgnoreCase("todos")) return emprestimoRepository.findByClienteNomeCompletoContainingIgnoreCaseOrLivrosTituloContainingIgnoreCase(search, search);
+                return emprestimoRepository.findByStatusNomeContainingIgnoreCaseAndClienteNomeCompletoContainingIgnoreCaseOrLivrosTituloContainingIgnoreCase(status, search, search);
+            } else {
+                if(status.equalsIgnoreCase("todos")) return emprestimoRepository.findByClienteIdAndClienteNomeCompletoContainingIgnoreCaseOrLivrosTituloContainingIgnoreCase(user.getId(), search, search);
+                return emprestimoRepository.findByClienteIdAndClienteNomeCompletoContainingIgnoreCaseOrLivrosTituloContainingIgnoreCaseAndStatusNomeContainingIgnoreCase(user.getId(), search, search, status);
+            }
+        } else {
+            if (userCanViewEverything) {
+                return emprestimoRepository.findAllByClienteNomeCompletoContainingIgnoreCaseOrLivrosTituloContainingIgnoreCase(search, search);
+            } else {
+                return emprestimoRepository.findByClienteIdAndClienteNomeCompletoContainingIgnoreCaseOrLivrosTituloContainingIgnoreCase(user.getId(), search, search);
+            }
+        }
     }
 }

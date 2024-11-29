@@ -15,4 +15,6 @@ public interface ReservaService {
     void deleteReserva(Reserva reserva);
 
     List<Reserva> findReservasByParams(UserEntity user, String search, String status);
+
+    void finalizarReserva(Reserva reserva);
 }
